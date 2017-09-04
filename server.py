@@ -1,17 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2017-9-2 15:56
+# @Time    : 2017-9-4 10:03
 # @Author  : wtr
-# @File    : main.py
+# @File    : server.py
 
 import tornado.httpserver
 import tornado.web
+import tornado.websocket
+import tornado.ioloop
+from tornado.options import define, options
+from auth_main import *
+
+import tornado.httpserver
+import tornado.web
+import tornado.websocket
 import tornado.ioloop
 from tornado.options import define, options
 from auth_main import *
 
 define("port", default=8878, help="run on the given port", type=int)
 tornado.options.parse_command_line()
+
 
 # websocket
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
@@ -30,10 +39,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
     @classmethod
     def pushdata(cls, message, app):
-        s = datapipe(message)
-        data = s.getdata()
         for i in cls.waiters:
             if i == app:
+                if message == 'initv':
+                    data = initv()
+                if message == 'q_tree':
+                    data = query_group_tree()
+                if message == 'q_g_r':
+                    data = query_group_role()
                 i.write_message(data)
 
     def on_message(self, message):
