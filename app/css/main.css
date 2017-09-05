@@ -1,0 +1,19 @@
+.left_div {
+    position: relative;
+    float: left;
+}
+
+.middle_div {
+    position: relative;
+    float: left;
+}
+
+.right_div {
+    position: relative;
+    float: left;
+}
+
+.div_n{
+	height: 700px;
+	width: 400px;
+}
