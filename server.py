@@ -18,7 +18,7 @@ import tornado.ioloop
 from tornado.options import define, options
 from auth_main import *
 
-define("port", default=8878, help="run on the given port", type=int)
+define("port", default=9909, help="run on the given port", type=int)
 tornado.options.parse_command_line()
 
 
