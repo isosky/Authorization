@@ -21,7 +21,6 @@ ws.onmessage = function(e) {
         var _tree = $('#g_tree');
         productchild(temp, _tree);
         init_tree();
-
     }
 };
 

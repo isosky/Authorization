@@ -22,7 +22,6 @@ define("port", default=9909, help="run on the given port", type=int)
 tornado.options.parse_command_line()
 
 
-# websocket
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     waiters = set()
 
