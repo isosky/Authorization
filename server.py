@@ -46,6 +46,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_tree()
                 if message == 'q_g_r':
                     data = query_group_role()
+                if 'addgroup' in message:
+                    temp = message.split(',')
+                    addgroup(temp[1], temp[2])
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_tree()
                 i.write_message(data)
 
     def on_message(self, message):

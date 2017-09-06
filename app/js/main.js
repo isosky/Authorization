@@ -1,7 +1,7 @@
 var ws = new WebSocket("ws://localhost:9909/ws");
 var group_name = [];
 var role_name = [];
-
+var g_selected;
 
 ws.onmessage = function(e) {
     getdata = eval('(' + e.data + ')');
@@ -19,6 +19,7 @@ ws.onmessage = function(e) {
     if (getdata['ws'] == 'q_tree') {
         temp = getdata['data'];
         var _tree = $('#g_tree');
+        _tree.empty();
         productchild(temp, _tree);
         init_tree();
     }
@@ -28,6 +29,10 @@ var init_tree = function() {
     $('.tree li:has(ul)').addClass('parent_li');
     $('.tree li >span').on('click', function(e) {
         console.log($(this));
+        g_selected=$(this).context.id;
+        // reset add group father name
+        $('#g_f_name').html(group_name[g_selected]);
+        // end
         $(this).toggleClass('selector');
     });
     $('.tree li.parent_li > span').on('click', function(e) {
@@ -76,6 +81,8 @@ $("#q_tree").bind("click", function() {
 });
 
 // 业务逻辑,添加部门
-$("#q_a").bind("click", function() {
+$("#q_a_s").bind("click", function() {
     console.log('add group');
+    var new_name=$('#g_new_name').val();
+    ws.send('addgroup,'+g_selected+','+new_name);
 });
