@@ -85,4 +85,5 @@ $("#q_a_s").bind("click", function() {
     console.log('add group');
     var new_name=$('#g_new_name').val();
     ws.send('addgroup,'+g_selected+','+new_name);
+    $('#g_new_name').val('');
 });
