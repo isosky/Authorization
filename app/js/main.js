@@ -76,3 +76,7 @@ $("#q_tree").bind("click", function() {
     ws.send("q_tree");
 });
 
+// 业务逻辑,添加部门
+$("#q_a").bind("click", function() {
+    console.log('add group');
+});
