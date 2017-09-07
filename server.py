@@ -59,6 +59,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = initv()
                     i.write_message(data)
                     data = query_group_tree()
+                if 'deletegroup' in message:
+                    temp = message.split(',')
+                    if temp[2] == 'false':
+                        status = False
+                    else:
+                        status = True
+                    print status
+                    # modifygroup(temp[1], temp[2])
+                    data = initv()
+                    # i.write_message(data)
+                    # data = query_group_tree()
                 i.write_message(data)
 
     def on_message(self, message):

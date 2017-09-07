@@ -31,7 +31,7 @@ def modifygroup(g_id, g_name):
         print(err)
     db.commit()
 
-
+# todo waiting for testing
 def deletegroup(g_id, delete_sub):
     db = dbc()
     if delete_sub:
