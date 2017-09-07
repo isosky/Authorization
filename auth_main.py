@@ -32,14 +32,52 @@ def modifygroup(g_id, g_name):
     db.commit()
 
 
-def deletegroup(g_id):
+def deletegroup(g_id, delete_sub):
+    db = dbc()
+    if delete_sub:
+        try:
+            temp_sql = 'select g_id from auth_group where g_f_id= %s'%g_id
+            db.cur.execute(temp_sql)
+            d_gids = db.cur.fetchall()
+            for gid in d_gids:
+                if checksub(gid):
+                    for temp in checksub(g_id):
+                        deletegroup(gid, True)
+                else:
+                    deletegroup(gid, False)
+        except Exception as err:
+            print err
+    else:
+        try:
+            temp_sql = "select user_id from auth_user where g_id=%s"%g_id
+            db.cur.execute(temp_sql)
+            if db.cur.rowcount > 1:
+                for user_id in db.cur.fetchall():
+                    deleteuser(user_id=user_id)
+            temp_sql = "select r_id from auth_role_group where g_id=%s"%g_id
+            db.cur.execute(temp_sql)
+            if db.cur.rowcount > 1:
+                for role_id in db.cur.fetchall():
+                    deleterole(r_id=role_id)
+            temp_sql = "DELETE from  auth_group  WHERE g_id=%s"%g_id
+            db.cur.execute(temp_sql)
+        except Exception as err:
+            print err
+    db.commit()
+
+
+def checksub(g_id):
     db = dbc()
     try:
-        temp_sql = "DELETE from  auth_group  WHERE g_id=%s"%g_id
+        temp_sql = 'select g_id from auth_group where g_f_id= %s'%g_id
         db.cur.execute(temp_sql)
+        if db.cur.rowcount > 1:
+            d_gids = db.cur.fetchall()
+            return list(x[0] for x in d_gids)
+        else:
+            return False
     except Exception as err:
         print err
-    db.commit()
 
 
 def addrole(g_id, r_name):
@@ -68,6 +106,12 @@ def modifyrole(r_id, g_id, r_name):
 def deleterole(r_id):
     db = dbc()
     try:
+        temp_sql = "select p_id from auth_role_per where r_id = %s"%r_id
+        db.cur.execute(temp_sql)
+        if db.cur.rowcount > 1:
+            for temp in db.cur.fetchall():
+                deleterole_per(r_id, temp[0])
+            db.commit()
         temp_sql = "DELETE from  auth_role_group  WHERE r_id=%s"%r_id
         db.cur.execute(temp_sql)
     except Exception as err:
@@ -115,6 +159,12 @@ def updatepwd(user_id, pwd):
 def deleteuser(user_id):
     db = dbc()
     try:
+        temp_sql = "select p_id from auth_user_per where user_id = %s"%user_id
+        db.cur.execute(temp_sql)
+        if db.cur.rowcount > 1:
+            for temp in db.cur.fetchall():
+                deleteuser_per(user_id, temp[0])
+            db.commit()
         temp_sql = "Delete from auth_user WHERE  user_id=%s"%user_id
         db.cur.execute(temp_sql)
     except Exception as err:
@@ -291,5 +341,4 @@ if __name__ == '__main__':
     # print get_sub_tree(2, db)
     # print query_group_role(1)
     # query_group_tree()
-    temp = query_group_user(1)
-    print temp
+    deleterole(1)

@@ -18,21 +18,34 @@
     <div class="md-content">
         <h3>添加新部门</h3>
         <div>
-            上级节点部门 <span id="g_a_f_name">asd</span>
-            新部门名称：<input id="g_a_new_name" type="text" name="">
+            上级节点部门 <span id="g_a_f_name">asd</span> 新部门名称：
+            <input id="g_a_new_name" type="text" name="">
             <button id="q_a_g_s" class="md-submit m_button">Submit It!</button>
             <button class="md-close m_button">Close me!</button>
         </div>
     </div>
 </div>
 <!-- 模态框_修改部门 -->
-<div class="md-modal md-effect-2" id="modal-2">
+<div class="md-modal md-effect-1" id="modal-2">
     <div class="md-content">
-        <h3>添加新部门</h3>
+        <h3>修改部门名称</h3>
         <div>
-            选中部门名称 <span id="g_m_now_name">asd</span>
-            新部门名称：<input id="g_m_new_name" type="text" name="">
+            选中部门名称 <span id="g_m_now_name">asd</span> 新部门名称：
+            <input id="g_m_new_name" type="text" name="">
             <button id="q_m_g_s" class="md-submit m_button">Submit It!</button>
+            <button class="md-close m_button">Close me!</button>
+        </div>
+    </div>
+</div>
+<!-- 模态框_删除部门 -->
+<div class="md-modal md-effect-1" id="modal-3">
+    <div class="md-content">
+        <h3>删除部门</h3>
+        <div>
+            <p>注意!会删除改部门所有的角色及用户</p>
+            选中部门名称 <span id="g_d_now_name">asd</span>
+            <input id="g_d_c" type="checkbox">删除子部门
+            <button id="q_d_g_s" class="md-submit m_button">Submit It!</button>
             <button class="md-close m_button">Close me!</button>
         </div>
     </div>
@@ -44,7 +57,7 @@
             <button id="q_tree">生成部门树</button>
             <button id="q_a" class="md-trigger" data-modal="modal-1">添加部门</button>
             <button id="q_m" class="md-trigger" data-modal="modal-2">修改部门</button>
-            <button id="q_d">删除部门</button>
+            <button id="q_d" class="md-trigger" data-modal="modal-3">删除部门</button>
         </div>
         <div id="g_tree" class="div_n tree well"> </div>
     </div>
