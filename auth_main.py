@@ -7,7 +7,15 @@
 from  db import dbc
 import time
 import json
+import random
 
+def random10():
+    seed = "qwertyuiopasdfghjklzxcvbnm"
+    sa = []
+    for i in range(10):
+        sa.append(random.choice(seed))
+    sa = "".join(sa)
+    return sa
 
 def addgroup(g_f_id, g_name):
     db = dbc()
@@ -18,7 +26,7 @@ def addgroup(g_f_id, g_name):
         temp_sql = "INSERT INTO auth_group (g_id, g_f_id, group_name) VALUES (%s,%s,'%s')"%(max_id, g_f_id, g_name)
         db.cur.execute(temp_sql)
     except Exception as err:
-        print(err)
+        print err
     db.commit()
 
 
@@ -28,8 +36,9 @@ def modifygroup(g_id, g_name):
         temp_sql = "UPDATE auth_group SET group_name='%s' WHERE g_id=%s"%(g_name, g_id)
         db.cur.execute(temp_sql)
     except Exception as err:
-        print(err)
+        print err
     db.commit()
+
 
 # todo waiting for testing
 def deletegroup(g_id, delete_sub):
@@ -89,7 +98,7 @@ def addrole(g_id, r_name):
         temp_sql = "INSERT INTO auth_role_group (r_id, g_id, role_name) VALUES (%s,%s,'%s')"%(max_id, g_id, r_name)
         db.cur.execute(temp_sql)
     except Exception as err:
-        print(err)
+        print err
     db.commit()
 
 
@@ -99,7 +108,7 @@ def modifyrole(r_id, g_id, r_name):
         temp_sql = "UPDATE auth_role_group SET (g_id,role_name)= (%s,'%s') where r_id=%s"%(g_id, r_name, r_id)
         db.cur.execute(temp_sql)
     except Exception as err:
-        print(err)
+        print err
     db.commit()
 
 
@@ -127,7 +136,7 @@ def adduser(g_id, r_id, user_name):
     try:
         temp_sql = "INSERT INTO auth_user (user_id, g_id, r_id, user_name, isroot,login_name,pwd) VALUES (%s,%s,%s,'%s',%s,'%s','%s')"%(
             max_id, g_id, r_id, user_name, False, 'lcf', None)
-        print  temp_sql
+        # print  temp_sql
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -262,7 +271,7 @@ def query_group_tree():
     temp = {}
     temp[0] = get_sub(0, db)
     # print temp
-    return json.dumps({'ws': 'q_tree', 'data': temp})
+    return json.dumps({'name': 'q_tree', 'data': temp})
 
 
 def get_sub(root, db):
@@ -288,9 +297,9 @@ def query_group_user(g_id):
         if db.cur.rowcount > 0:
             temp = list(db.cur.fetchall())
             temp = [list(x) for x in temp]
+            return json.dumps({'name': 'user_list', 'data': list(temp)})
         else:
-            temp = None
-        return temp
+            return json.dumps({'name': 'user_list', 'data': []})
     except Exception as err:
         print err
 
@@ -302,7 +311,9 @@ def query_group_role(g_id):
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             temp = db.cur.fetchall()
-            return list(temp)
+            return json.dumps({'name': 'role_list', 'data': list(temp)})
+        else:
+            return json.dumps({'name': 'role_list', 'data': []})
     except Exception as err:
         print err
 
@@ -341,4 +352,10 @@ if __name__ == '__main__':
     # print get_sub_tree(2, db)
     # print query_group_role(1)
     # query_group_tree()
-    deleterole(1)
+    pass
+    # deleterole(1)
+    # r_g_id =[1,2,3,4]
+    # for i in range(30):
+    #     u_name =random10()
+    #     r_id =random.choice(r_g_id)
+    #     adduser(1,r_id,u_name)

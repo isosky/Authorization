@@ -65,11 +65,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                         status = False
                     else:
                         status = True
-                    print status
-                    # modifygroup(temp[1], temp[2])
                     data = initv()
-                    # i.write_message(data)
-                    # data = query_group_tree()
+                if 'selectgroup' in message:
+                    gid =message.split(',')[1]
+                    data = query_group_role(gid)
+                    print data
+                    i.write_message(data)
+                    data = query_group_user(gid)
                 i.write_message(data)
 
     def on_message(self, message):
