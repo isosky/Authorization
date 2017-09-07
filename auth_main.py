@@ -22,10 +22,10 @@ def addgroup(g_f_id, g_name):
     db.commit()
 
 
-def modifygroup(g_id, g_f_id, g_name):
+def modifygroup(g_id, g_name):
     db = dbc()
     try:
-        temp_sql = "UPDATE auth_group SET (g_f_id,group_name)=(%s,'%s') WHERE g_id=%s"%(g_f_id, g_name, g_id)
+        temp_sql = "UPDATE auth_group SET group_name='%s' WHERE g_id=%s"%(g_name, g_id)
         db.cur.execute(temp_sql)
     except Exception as err:
         print(err)

@@ -40,6 +40,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def pushdata(cls, message, app):
         for i in cls.waiters:
             if i == app:
+                print message
                 if message == 'initv':
                     data = initv()
                 if message == 'q_tree':
@@ -49,6 +50,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 if 'addgroup' in message:
                     temp = message.split(',')
                     addgroup(temp[1], temp[2])
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_tree()
+                if 'modifygroup' in message:
+                    temp = message.split(',')
+                    modifygroup(temp[1], temp[2])
                     data = initv()
                     i.write_message(data)
                     data = query_group_tree()

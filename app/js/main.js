@@ -31,7 +31,8 @@ var init_tree = function() {
         console.log($(this));
         g_selected=$(this).context.id;
         // reset add group father name
-        $('#g_f_name').html(group_name[g_selected]);
+        $('#g_a_f_name').html(group_name[g_selected]);
+        $('#g_m_now_name').html(group_name[g_selected]);
         // end
         $(this).toggleClass('selector');
     });
@@ -81,9 +82,17 @@ $("#q_tree").bind("click", function() {
 });
 
 // 业务逻辑,添加部门
-$("#q_a_s").bind("click", function() {
+$("#q_a_g_s").bind("click", function() {
     console.log('add group');
-    var new_name=$('#g_new_name').val();
+    var new_name=$('#g_a_new_name').val();
     ws.send('addgroup,'+g_selected+','+new_name);
-    $('#g_new_name').val('');
+    $('#g_a_new_name').val('');
+});
+
+// 业务逻辑,修改部门
+$("#q_m_g_s").bind("click", function() {
+    console.log('add group');
+    var new_name=$('#g_m_new_name').val();
+    ws.send('modifygroup,'+g_selected+','+new_name);
+    $('#g_m_new_name').val('');
 });
