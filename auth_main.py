@@ -9,6 +9,7 @@ import time
 import json
 import random
 
+
 def random10():
     seed = "qwertyuiopasdfghjklzxcvbnm"
     sa = []
@@ -16,6 +17,7 @@ def random10():
         sa.append(random.choice(seed))
     sa = "".join(sa)
     return sa
+
 
 def addgroup(g_f_id, g_name):
     db = dbc()
@@ -348,10 +350,37 @@ def query_role_name():
         print err
 
 
+def query_per_name():
+    db = dbc()
+    try:
+        temp_sql = "SELECT p_id,permit_name FROM auth_per ORDER BY p_id"
+        db.cur.execute(temp_sql)
+        if db.cur.rowcount > 0:
+            temp = db.cur.fetchall()
+            temp = list([list(x) for x in temp])
+            return json.dumps({'name': 'role_list', 'data': temp})
+    except Exception as err:
+        print err
+
+
+def query_per_role(r_id):
+    db = dbc()
+    try:
+        temp_sql = ' select p_id from auth_role_per where r_id=%s order by p_id'%r_id
+        db.cur.execute(temp_sql)
+        if db.cur.rowcount > 0:
+            temp = db.cur.fetchall()
+            temp = list([x[0] for x in temp])
+            return json.dumps({'name': 'this_role_list', 'data': temp})
+    except Exception as err:
+        print err
+
+
 if __name__ == '__main__':
     # print get_sub_tree(2, db)
     # print query_group_role(1)
     # query_group_tree()
+    print query_per_role(1)
     pass
     # deleterole(1)
     # r_g_id =[1,2,3,4]

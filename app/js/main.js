@@ -1,7 +1,7 @@
 var ws = new WebSocket("ws://localhost:9909/ws");
 var group_name = [];
 var role_name = [];
-var g_selected;
+var g_selected, r_selected, u_selected;
 var role_user = {};
 
 ws.onmessage = function(e) {
@@ -65,10 +65,13 @@ var init_tree = function() {
         if ($(this).parents('div')[0].id == 'r_tree') {
             $('#r_tree li >span').filter('.selector').toggleClass('selector');
             $(this).toggleClass('selector');
+            r_selected = $(this).context.id;
+            coloruser(r_selected);
         }
         if ($(this).parents('div')[0].id == 'u_tree') {
             $('#u_tree li >span').filter('.selector').toggleClass('selector');
             $(this).toggleClass('selector');
+            u_selected = $(this).context.id;
         }
     });
 };
@@ -142,4 +145,22 @@ $("#q_d_g_s").bind("click", function() {
 function afterselectgroup(gid) {
     console.log('afterselectgroup', gid);
     ws.send('selectgroup,' + gid);
+}
+
+function coloruser(rid) {
+    if (rid in role_user) {
+        temp = role_user[rid];
+        $('#u_tree').find('li').each(function() {
+            index = $.inArray(parseInt($(this).children()[0].id), temp);
+            if (index > -1) {
+                // $(this).children()[0].toggleClass('selector');
+                _temp = $($(this).find('span')[0]);
+                _temp.addClass('selector');
+            } else {
+                // $($(this).find('span')[0]).removeClass('selector');
+                _temp = $($(this).find('span')[0]);
+                _temp.removeClass('selector');
+            }
+        })
+    }
 }
