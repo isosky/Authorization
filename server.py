@@ -72,6 +72,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     print data
                     i.write_message(data)
                     data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
                 i.write_message(data)
 
     def on_message(self, message):

@@ -358,7 +358,7 @@ def query_per_name():
         if db.cur.rowcount > 0:
             temp = db.cur.fetchall()
             temp = list([list(x) for x in temp])
-            return json.dumps({'name': 'role_list', 'data': temp})
+            return json.dumps({'name': 'per_list', 'data': temp})
     except Exception as err:
         print err
 

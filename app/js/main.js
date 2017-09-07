@@ -31,6 +31,13 @@ ws.onmessage = function(e) {
         productchild_easy(temp, _tree);
         init_tree();
     };
+    if (getdata['name'] == 'per_list') {
+        temp = getdata['data'];
+        var _tree = $('#p_tree');
+        _tree.empty();
+        productchild_easy(temp, _tree);
+        init_tree();
+    };
     if (getdata['name'] == 'user_list') {
         temp = getdata['data'];
         var _tree = $('#u_tree');
