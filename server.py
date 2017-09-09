@@ -43,7 +43,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 print message
                 if message == 'initv':
                     data = initv()
-                    print data
                 if message == 'q_tree':
                     data = query_group_tree()
                 if message == 'q_g_r':
