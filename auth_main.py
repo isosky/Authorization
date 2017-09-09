@@ -381,5 +381,17 @@ def query_per_role():
         print err
 
 
+def add_per(p_name):
+    db = dbc()
+    try:
+        db.cur.execute("SELECT max(p_id) FROM auth_per")
+        max_id = db.cur.fetchone()[0] + 1
+        temp_sql = ("insert into auth_per (p_id, permit_name) VALUES (%s,'%s')")%(max_id, p_name)
+        db.cur.execute(temp_sql)
+        db.commit()
+    except Exception as err:
+        print err
+
+
 if __name__ == '__main__':
-    pass
+    add_per('权限4')

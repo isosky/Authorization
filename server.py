@@ -69,11 +69,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 if 'selectgroup' in message:
                     gid =message.split(',')[1]
                     data = query_group_role(gid)
-                    print data
                     i.write_message(data)
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
+                if 'add_per' in message:
+                    per_name = message.split(',')[1]
+                    add_per(per_name)
+                    data =query_per_name()
                 i.write_message(data)
 
     def on_message(self, message):

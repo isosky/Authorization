@@ -1,7 +1,7 @@
 var ws = new WebSocket("ws://localhost:9909/ws");
 var group_name = [];
 var role_name = [];
-var g_selected, r_selected, u_selected;
+var g_selected, r_selected, u_selected, pu_selected;
 var role_user = {};
 var r_p_list = [];
 
@@ -64,7 +64,7 @@ ws.onmessage = function(e) {
 var init_tree = function() {
     $('.tree li:has(ul)').addClass('parent_li');
     $('.tree li >span').on('click', function(e) {
-        console.log($(this));
+        // console.log($(this));
         if ($(this).parents('div')[0].id == 'g_tree') {
             g_selected = $(this).context.id;
             // reset add group father name
@@ -77,8 +77,8 @@ var init_tree = function() {
             $(this).toggleClass('selector');
         }
         if ($(this).parents('div')[0].id == 'r_tree') {
-            $('#r_tree li >span').filter('.selector').toggleClass('selector');
-            $(this).toggleClass('selector');
+            $('#r_tree li >span').filter('.easy_selector').toggleClass('easy_selector');
+            $(this).toggleClass('easy_selector');
             r_selected = $(this).context.id;
             // 将用户树中属于选中部门的员工添加颜色
             _u_root = $('#u_tree');
@@ -87,14 +87,24 @@ var init_tree = function() {
             _p_root = $('#p_tree');
             coloruser(r_selected, r_p_list, _p_root);
         }
+        if ($(this).parents('div')[0].id == 'p_tree') {
+            if ($('#p_tree li >span').filter('.easy_selector').length > 0) {
+                $('#p_tree li >span').filter('.easy_selector').removeClass('easy_selector');
+            }
+            $(this).toggleClass('easy_selector');
+            u_selected = $(this).context.id;
+        }
         if ($(this).parents('div')[0].id == 'u_tree') {
-            $('#u_tree li >span').filter('.selector').toggleClass('selector');
-            $(this).toggleClass('selector');
+            if ($('#u_tree li >span').filter('.easy_selector').length > 0) {
+                $('#u_tree li >span').filter('.easy_selector').removeClass('easy_selector');
+            }
+            $(this).toggleClass('easy_selector');
             u_selected = $(this).context.id;
         }
     });
 };
 
+// 复杂添加树节点
 function productchild(data, _root) {
     for (var i in data) {
         if (data[i] != null) {
@@ -112,7 +122,7 @@ function productchild(data, _root) {
     };
 }
 
-
+// 简单添加树节点
 function productchild_easy(data, _root) {
     for (var i in data) {
         var li = $("<li><span id=" + data[i][0] + "><i class='icon-leaf'></i>" + data[i][1] + "</span>");
@@ -165,6 +175,14 @@ function afterselectgroup(gid) {
     console.log('afterselectgroup', gid);
     ws.send('selectgroup,' + gid);
 }
+
+// 业务逻辑,添加权限
+$("#p_a_s").bind("click", function() {
+    console.log("add per");
+    var temp_name = $('#p_a_name').val();
+    ws.send("add_per," + temp_name);
+    $('#p_a_name').val('');
+})
 
 // 添加用户树节点颜色
 function coloruser(rid, _data, _root) {
