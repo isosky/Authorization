@@ -323,7 +323,8 @@ def query_group_role(g_id):
 def initv():
     g_name = query_group_name()
     r_name = query_role_name()
-    return json.dumps({'name': 'v', 'g_name': g_name, 'r_name': r_name})
+    r_p_list = query_per_role()
+    return json.dumps({'name': 'v', 'g_name': g_name, 'r_name': r_name, 'r_p_list': r_p_list})
 
 
 def query_group_name():
@@ -363,28 +364,22 @@ def query_per_name():
         print err
 
 
-def query_per_role(r_id):
+def query_per_role():
     db = dbc()
+    res = {}
     try:
-        temp_sql = ' select p_id from auth_role_per where r_id=%s order by p_id'%r_id
+        temp_sql = ' SELECT r_id,p_id FROM auth_role_per ORDER BY p_id'
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             temp = db.cur.fetchall()
-            temp = list([x[0] for x in temp])
-            return json.dumps({'name': 'this_role_list', 'data': temp})
+            for row in temp:
+                if row[0] not in res.keys():
+                    res[row[0]] = []
+                res[row[0]].append(row[1])
+            return res
     except Exception as err:
         print err
 
 
 if __name__ == '__main__':
-    # print get_sub_tree(2, db)
-    # print query_group_role(1)
-    # query_group_tree()
-    print query_per_role(1)
     pass
-    # deleterole(1)
-    # r_g_id =[1,2,3,4]
-    # for i in range(30):
-    #     u_name =random10()
-    #     r_id =random.choice(r_g_id)
-    #     adduser(1,r_id,u_name)

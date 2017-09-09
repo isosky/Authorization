@@ -3,6 +3,8 @@ var group_name = [];
 var role_name = [];
 var g_selected, r_selected, u_selected;
 var role_user = {};
+var r_p_list = [];
+
 
 ws.onmessage = function(e) {
     getdata = eval('(' + e.data + ')');
@@ -15,6 +17,11 @@ ws.onmessage = function(e) {
         temp = getdata['r_name'];
         for (var i in temp) {
             role_name[temp[i][0]] = temp[i][1];
+        }
+        temp = getdata['r_p_list'];
+        for (var i in temp) {
+            console.log(i, temp[i]);
+            r_p_list[i] = temp[i];
         }
     };
     if (getdata['name'] == 'q_tree') {
@@ -73,7 +80,12 @@ var init_tree = function() {
             $('#r_tree li >span').filter('.selector').toggleClass('selector');
             $(this).toggleClass('selector');
             r_selected = $(this).context.id;
-            coloruser(r_selected);
+            // 将用户树中属于选中部门的员工添加颜色
+            _u_root = $('#u_tree');
+            coloruser(r_selected, role_user, _u_root);
+            // 将权限树中属于选中部门的权限添加颜色
+            _p_root = $('#p_tree');
+            coloruser(r_selected, r_p_list, _p_root);
         }
         if ($(this).parents('div')[0].id == 'u_tree') {
             $('#u_tree li >span').filter('.selector').toggleClass('selector');
@@ -154,20 +166,24 @@ function afterselectgroup(gid) {
     ws.send('selectgroup,' + gid);
 }
 
-function coloruser(rid) {
-    if (rid in role_user) {
-        temp = role_user[rid];
-        $('#u_tree').find('li').each(function() {
+// 添加用户树节点颜色
+function coloruser(rid, _data, _root) {
+    if (rid in _data) {
+        temp = _data[rid];
+        _root.find('li').each(function() {
             index = $.inArray(parseInt($(this).children()[0].id), temp);
             if (index > -1) {
-                // $(this).children()[0].toggleClass('selector');
                 _temp = $($(this).find('span')[0]);
                 _temp.addClass('selector');
             } else {
-                // $($(this).find('span')[0]).removeClass('selector');
                 _temp = $($(this).find('span')[0]);
                 _temp.removeClass('selector');
             }
+        })
+    } else {
+        _root.find('li').each(function() {
+            _temp = $($(this).find('span')[0]);
+            _temp.removeClass('selector');
         })
     }
 }
