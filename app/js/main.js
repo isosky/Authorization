@@ -1,7 +1,8 @@
 var ws = new WebSocket("ws://localhost:9909/ws");
 var group_name = [];
 var role_name = [];
-var g_selected, r_selected, u_selected, pu_selected;
+var per_name = [];
+var g_selected, r_selected, u_selected, p_selected;
 var role_user = {};
 var r_p_list = [];
 
@@ -40,6 +41,9 @@ ws.onmessage = function(e) {
     };
     if (getdata['name'] == 'per_list') {
         temp = getdata['data'];
+        for (var i in temp) {
+            per_name[temp[i][0]] = temp[i][1];
+        }
         var _tree = $('#p_tree');
         _tree.empty();
         productchild_easy(temp, _tree);
@@ -79,6 +83,7 @@ var init_tree = function() {
         if ($(this).parents('div')[0].id == 'r_tree') {
             $('#r_tree li >span').filter('.easy_selector').toggleClass('easy_selector');
             $(this).toggleClass('easy_selector');
+            // 将选中的id存到全局变量中
             r_selected = $(this).context.id;
             // 将用户树中属于选中部门的员工添加颜色
             _u_root = $('#u_tree');
@@ -86,19 +91,31 @@ var init_tree = function() {
             // 将权限树中属于选中部门的权限添加颜色
             _p_root = $('#p_tree');
             coloruser(r_selected, r_p_list, _p_root);
+            // 修改添加角色权限模态框上的值
+            $('#p_a_r_name').html(role_name[r_selected]);
+            // 修改删除角色权限模态框上的值
+            $('#p_d_r_name').html(role_name[r_selected]);
         }
         if ($(this).parents('div')[0].id == 'p_tree') {
             if ($('#p_tree li >span').filter('.easy_selector').length > 0) {
                 $('#p_tree li >span').filter('.easy_selector').removeClass('easy_selector');
             }
             $(this).toggleClass('easy_selector');
-            u_selected = $(this).context.id;
+            // 将选中的id存到全局变量中
+            p_selected = $(this).context.id;
+            // 修改模态框上的值
+            $('#p_d_name').html(per_name[p_selected]);
+            // 修改添加角色权限模态框上的值
+            $('#p_a_p_name').html(per_name[p_selected]);
+            // 修改删除角色权限模态框上的值
+            $('#p_d_p_name').html(per_name[p_selected]);
         }
         if ($(this).parents('div')[0].id == 'u_tree') {
             if ($('#u_tree li >span').filter('.easy_selector').length > 0) {
                 $('#u_tree li >span').filter('.easy_selector').removeClass('easy_selector');
             }
             $(this).toggleClass('easy_selector');
+            // 将选中的id存到全局变量中
             u_selected = $(this).context.id;
         }
     });
@@ -146,7 +163,7 @@ $("#q_tree").bind("click", function() {
 
 // 业务逻辑,添加部门
 $("#q_a_g_s").bind("click", function() {
-    console.log('add group');
+    console.log('addgroup');
     var new_name = $('#g_a_new_name').val();
     ws.send('addgroup,' + g_selected + ',' + new_name);
     $('#g_a_new_name').val('');
@@ -155,7 +172,7 @@ $("#q_a_g_s").bind("click", function() {
 
 // 业务逻辑,修改部门
 $("#q_m_g_s").bind("click", function() {
-    console.log('modify group');
+    console.log('modifygroup');
     var new_name = $('#g_m_new_name').val();
     ws.send('modifygroup,' + g_selected + ',' + new_name);
     $('#g_m_new_name').val('');
@@ -164,7 +181,7 @@ $("#q_m_g_s").bind("click", function() {
 
 // 业务逻辑,删除部门
 $("#q_d_g_s").bind("click", function() {
-    console.log('delete group');
+    console.log('deletegroup');
     var temp_status = $('#g_d_c').prop('checked');
     ws.send('deletegroup,' + g_selected + ',' + temp_status);
     g_selected = '';
@@ -178,11 +195,43 @@ function afterselectgroup(gid) {
 
 // 业务逻辑,添加权限
 $("#p_a_s").bind("click", function() {
-    console.log("add per");
+    console.log("add_per");
     var temp_name = $('#p_a_name').val();
     ws.send("add_per," + temp_name);
     $('#p_a_name').val('');
 })
+
+// 业务逻辑,修改权限名称
+$("#p_u_s").bind("click", function() {
+    console.log("modify_per");
+    var temp_name = $('#p_u_name').val();
+    ws.send("modify_per," + p_selected + ',' + temp_name);
+    $('#p_u_name').val('');
+})
+
+// 业务逻辑,删除权限
+$("#p_d_s").bind("click", function() {
+    console.log("delete_per");
+    ws.send("delete_per," + p_selected);
+    $('#p_d_name').val('');
+})
+
+// 业务逻辑,删除权限
+$("#p_a_r_s").bind("click", function() {
+    console.log("add_role_per");
+    ws.send("add_role_per," + r_selected + "," + p_selected);
+    $('#p_a_r_name').val('');
+    $('#p_a_p_name').val('');
+})
+
+// 业务逻辑,删除权限
+$("#p_d_r_s").bind("click", function() {
+    console.log("delete_role_per");
+    ws.send("delete_role_per," + r_selected + "," + p_selected);
+    $('#p_d_r_name').val('');
+    $('#p_d_p_name').val('');
+})
+
 
 // 添加用户树节点颜色
 function coloruser(rid, _data, _root) {
