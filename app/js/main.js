@@ -217,6 +217,7 @@ $("#p_d_s").bind("click", function() {
 })
 
 // 业务逻辑,删除权限
+// todo 刷新没做
 $("#p_a_r_s").bind("click", function() {
     console.log("add_role_per");
     ws.send("add_role_per," + r_selected + "," + p_selected);
@@ -225,6 +226,7 @@ $("#p_a_r_s").bind("click", function() {
 })
 
 // 业务逻辑,删除权限
+// todo 刷新没做
 $("#p_d_r_s").bind("click", function() {
     console.log("delete_role_per");
     ws.send("delete_role_per," + r_selected + "," + p_selected);
