@@ -202,6 +202,7 @@ def addrole_per(r_id, p_id):
     try:
         temp_sql = "Insert into auth_role_per VALUES (%s,%s)"%(r_id, p_id)
         db.cur.execute(temp_sql)
+        db.commit()
         # 对这个角色的每个员工增加这个权限
         # 一个人只有一个角色
         temp_sql = 'select user_id from auth_user where r_id=%s'%r_id
@@ -247,12 +248,12 @@ def deleterole_per(r_id, p_id):
         db.cur.execute(temp_sql)
         db.commit()
         # 对这个角色的每个员工删除权限
-        temp_sql = "select * from auth_user WHERE  r_id=%s"%r_id
+        temp_sql = "select user_id from auth_user WHERE  r_id=%s"%r_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             all_user = db.cur.fetchall()
             for user in all_user:
-                deleteuser_per(user_id=user, p_id=p_id)
+                deleteuser_per(user_id=user[0], p_id=p_id)
     except Exception as err:
         print err
     db.commit()
