@@ -31,7 +31,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         WebSocketHandler.waiters.add(self)
         print 'open'
-        print self.waiters
+        # print self.waiters
 
     def on_close(self):
         WebSocketHandler.waiters.remove(self)
