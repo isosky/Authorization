@@ -53,8 +53,13 @@
 <!-- 模态框_添加权限 -->
 <div class="md-modal md-effect-1" id="modal-4">
     <div class="md-content">
-        <button class="md-submit m_button">Submit It!</button>
-        <button class="md-close m_button">Close me!</button>
+        <h3>添加角色</h3>
+        <div>
+            选中部门名称 <span id="r_a_now_name">asd</span>
+            添加角色:<input id="r_a_name" type="text" name="">
+            <button id="r_a_s" class="md-submit m_button">Submit It!</button>
+            <button class="md-close m_button">Close me!</button>
+        </div>
     </div>
 </div>
 <!-- 模态框_添加权限 -->
@@ -110,8 +115,8 @@
     <div class="md-content">
         <h3>为角色添加权限</h3>
         <div> 角色名称:
-            <span id="p_a_r_name">asd</span>
-            权限名称:<span id="p_a_p_name">asd</span>
+            <span id="p_a_r_name">asd</span> 权限名称:
+            <span id="p_a_p_name">asd</span>
             <button id="p_a_r_s" class="md-submit m_button">Submit It!</button>
             <button class="md-close m_button">Close me!</button>
         </div>
@@ -122,8 +127,8 @@
     <div class="md-content">
         <h3>为角色删除权限</h3>
         <div> 角色名称:
-            <span id="p_d_r_name">asd</span>
-            权限名称:<span id="p_d_p_name">asd</span>
+            <span id="p_d_r_name">asd</span> 权限名称:
+            <span id="p_d_p_name">asd</span>
             <button id="p_d_r_s" class="md-submit m_button">Submit It!</button>
             <button class="md-close m_button">Close me!</button>
         </div>
@@ -163,9 +168,9 @@
     </div>
     <div class="left_div">
         <div>
-            <button id="r_a" class=" md-trigger" data-modal="modal-4">添加角色</button>
+            <button id="r_a" class="md-trigger" data-modal="modal-4">添加角色</button>
             <button id="r_m" class="md-trigger" data-modal="modal-5">修改角色</button>
-            <button id="r_d" class=" md-trigger" data-modal="modal-6">删除角色</button>
+            <button id="r_d" class="md-trigger" data-modal="modal-6">删除角色</button>
         </div>
         <div id="r_tree" class="div_n tree well" style="overflow:auto"> </div>
     </div>

@@ -75,6 +75,9 @@ var init_tree = function() {
             $('#g_a_f_name').html(group_name[g_selected]);
             $('#g_m_now_name').html(group_name[g_selected]);
             $('#g_d_now_name').html(group_name[g_selected]);
+            // 添加角色上的部门名称名称
+            $('#r_a_now_name').html(group_name[g_selected]);
+            // 获取选中部门的角色人员
             afterselectgroup(g_selected);
             // end
             $('#g_tree li >span').filter('.selector').toggleClass('selector');
@@ -217,7 +220,6 @@ $("#p_d_s").bind("click", function() {
 })
 
 // 业务逻辑,删除权限
-// todo 刷新没做
 $("#p_a_r_s").bind("click", function() {
     console.log("add_role_per");
     ws.send("add_role_per," + r_selected + "," + p_selected);
@@ -226,12 +228,18 @@ $("#p_a_r_s").bind("click", function() {
 })
 
 // 业务逻辑,删除权限
-// todo 刷新没做
 $("#p_d_r_s").bind("click", function() {
     console.log("delete_role_per");
     ws.send("delete_role_per," + r_selected + "," + p_selected);
     $('#p_d_r_name').val('');
     $('#p_d_p_name').val('');
+})
+
+// 业务逻辑,添加角色
+$("#r_a_s").bind("click", function() {
+    console.log("add role");
+    var temp_name = $('#r_a_name').val();
+    ws.send("add_role," + g_selected + "," + temp_name);
 })
 
 

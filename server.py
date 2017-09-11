@@ -100,6 +100,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     p_id = temp[2]
                     deleterole_per(r_id=r_id, p_id=p_id)
                     data = query_per_name()
+                if 'add_role' in message:
+                    temp = message.split(',')
+                    gid = temp[1]
+                    addrole(gid, temp[2])
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
                 i.write_message(data)
 
     def on_message(self, message):
