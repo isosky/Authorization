@@ -65,7 +65,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                         status = False
                     else:
                         status = True
+                    deletegroup(temp[1], status)
                     data = initv()
+                    i.write_message(data)
+                    data = query_group_tree()
                 if 'selectgroup' in message:
                     gid = message.split(',')[1]
                     data = query_group_role(gid)
