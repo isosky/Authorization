@@ -111,6 +111,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
+                if 'modify_role' in message:
+                    temp = message.split(',')
+                    gid = temp[3]
+                    modifyrole(temp[1], temp[2])
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
                 i.write_message(data)
 
     def on_message(self, message):

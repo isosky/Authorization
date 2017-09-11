@@ -94,6 +94,8 @@ var init_tree = function() {
             // 将权限树中属于选中部门的权限添加颜色
             _p_root = $('#p_tree');
             coloruser(r_selected, r_p_list, _p_root);
+            // 修改修改橘色模态框上的值
+            $('#r_m_now_name').html(role_name[r_selected]);
             // 修改添加角色权限模态框上的值
             $('#p_a_r_name').html(role_name[r_selected]);
             // 修改删除角色权限模态框上的值
@@ -240,8 +242,16 @@ $("#r_a_s").bind("click", function() {
     console.log("add role");
     var temp_name = $('#r_a_name').val();
     ws.send("add_role," + g_selected + "," + temp_name);
+    $('#r_a_name').val('');
 })
 
+// 业务逻辑,修改角色
+$("#r_m_s").bind("click", function() {
+    console.log("modify role");
+    var temp_name = $('#r_m_name').val();
+    ws.send("modify_role," + r_selected + "," + temp_name+','+g_selected);
+    $('#r_m_name').val('');
+})
 
 // 添加用户树节点颜色
 function coloruser(rid, _data, _root) {
