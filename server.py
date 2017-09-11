@@ -41,6 +41,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         for i in cls.waiters:
             if i == app:
                 print message
+                temp =message.split(',')
                 if message == 'initv':
                     data = initv()
                 if message == 'q_tree':
@@ -93,12 +94,20 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     r_id = temp[1]
                     p_id = temp[2]
                     addrole_per(r_id=r_id, p_id=p_id)
-                    data = query_per_name()
+                    gid = temp[3]
+                    data = initv()
                 if 'delete_role_per' in message:
                     temp = message.split(',')
                     r_id = temp[1]
                     p_id = temp[2]
                     deleterole_per(r_id=r_id, p_id=p_id)
+                    gid = temp[3]
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
                     data = query_per_name()
                 if 'add_role' in message:
                     temp = message.split(',')
@@ -115,6 +124,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     temp = message.split(',')
                     gid = temp[3]
                     modifyrole(temp[1], temp[2])
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
+                if 'delete_role' in message:
+                    temp = message.split(',')
+                    gid = temp[2]
+                    deleterole(temp[1])
                     data = initv()
                     i.write_message(data)
                     data = query_group_role(gid)

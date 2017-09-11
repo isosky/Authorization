@@ -119,10 +119,14 @@ def deleterole(r_id):
     try:
         temp_sql = "select p_id from auth_role_per where r_id = %s"%r_id
         db.cur.execute(temp_sql)
-        if db.cur.rowcount > 1:
+        if db.cur.rowcount > 0:
             for temp in db.cur.fetchall():
                 deleterole_per(r_id, temp[0])
             db.commit()
+        # 将角色对应的用户的角色清空
+        temp_sql = "update auth_user set r_id=NULL where r_id=%s"%r_id
+        db.cur.execute(temp_sql)
+        db.commit()
         temp_sql = "DELETE from  auth_role_group  WHERE r_id=%s"%r_id
         db.cur.execute(temp_sql)
     except Exception as err:
@@ -204,7 +208,7 @@ def addrole_per(r_id, p_id):
         db.cur.execute(temp_sql)
         all_user = db.cur.fetchall()
         for user in all_user:
-            adduser_per(user_id=user, p_id=p_id)
+            adduser_per(user_id=user[0], p_id=p_id)
     except Exception as err:
         print err
     db.commit()
@@ -241,12 +245,14 @@ def deleterole_per(r_id, p_id):
     try:
         temp_sql = "delete from auth_role_per where r_id=%s and p_id=%s"%(r_id, p_id)
         db.cur.execute(temp_sql)
+        db.commit()
         # 对这个角色的每个员工删除权限
         temp_sql = "select * from auth_user WHERE  r_id=%s"%r_id
         db.cur.execute(temp_sql)
-        all_user = db.cur.fetchall()
-        for user in all_user:
-            deleteuser_per(user_id=user, p_id=p_id)
+        if db.cur.rowcount > 0:
+            all_user = db.cur.fetchall()
+            for user in all_user:
+                deleteuser_per(user_id=user, p_id=p_id)
     except Exception as err:
         print err
     db.commit()
@@ -420,4 +426,4 @@ def deleteper(p_id):
 
 if __name__ == '__main__':
     # add_per('权限4')
-    deleteper(1)
+    deleterole(2)

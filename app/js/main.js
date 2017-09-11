@@ -94,8 +94,10 @@ var init_tree = function() {
             // 将权限树中属于选中部门的权限添加颜色
             _p_root = $('#p_tree');
             coloruser(r_selected, r_p_list, _p_root);
-            // 修改修改橘色模态框上的值
+            // 修改修改角色模态框上的值
             $('#r_m_now_name').html(role_name[r_selected]);
+            // 修改删除角色模态框上的值
+            $('#r_d_now_name').html(role_name[r_selected]);
             // 修改添加角色权限模态框上的值
             $('#p_a_r_name').html(role_name[r_selected]);
             // 修改删除角色权限模态框上的值
@@ -221,18 +223,18 @@ $("#p_d_s").bind("click", function() {
     $('#p_d_name').val('');
 })
 
-// 业务逻辑,删除权限
+// 业务逻辑,为角色添加权限
 $("#p_a_r_s").bind("click", function() {
     console.log("add_role_per");
-    ws.send("add_role_per," + r_selected + "," + p_selected);
+    ws.send("add_role_per," + r_selected + "," + p_selected+','+g_selected);
     $('#p_a_r_name').val('');
     $('#p_a_p_name').val('');
 })
 
-// 业务逻辑,删除权限
+// 业务逻辑,为角色删除权限
 $("#p_d_r_s").bind("click", function() {
     console.log("delete_role_per");
-    ws.send("delete_role_per," + r_selected + "," + p_selected);
+    ws.send("delete_role_per," + r_selected + "," + p_selected+','+g_selected);
     $('#p_d_r_name').val('');
     $('#p_d_p_name').val('');
 })
@@ -249,8 +251,14 @@ $("#r_a_s").bind("click", function() {
 $("#r_m_s").bind("click", function() {
     console.log("modify role");
     var temp_name = $('#r_m_name').val();
-    ws.send("modify_role," + r_selected + "," + temp_name+','+g_selected);
+    ws.send("modify_role," + r_selected + "," + temp_name + ',' + g_selected);
     $('#r_m_name').val('');
+})
+
+// 业务逻辑,删除角色
+$("#r_d_s").bind("click", function() {
+    console.log("delete role");
+    ws.send("delete_role," + r_selected + ',' + g_selected);
 })
 
 // 添加用户树节点颜色
