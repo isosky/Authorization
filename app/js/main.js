@@ -30,14 +30,14 @@ ws.onmessage = function(e) {
         var _tree = $('#g_tree');
         _tree.empty();
         productchild(temp, _tree);
-        init_tree();
+        init_tree('g_tree');
     };
     if (getdata['name'] == 'role_list') {
         temp = getdata['data'];
         var _tree = $('#r_tree');
         _tree.empty();
         productchild_easy(temp, _tree);
-        init_tree();
+        init_tree('r_tree');
     };
     if (getdata['name'] == 'per_list') {
         temp = getdata['data'];
@@ -47,14 +47,14 @@ ws.onmessage = function(e) {
         var _tree = $('#p_tree');
         _tree.empty();
         productchild_easy(temp, _tree);
-        init_tree();
+        init_tree('p_tree');
     };
     if (getdata['name'] == 'user_list') {
         temp = getdata['data'];
         var _tree = $('#u_tree');
         _tree.empty();
         productchild_easy(temp, _tree);
-        init_tree();
+        init_tree('u_tree');
         for (var i in temp) {
             row = temp[i];
             if (!(row[2] in role_user)) {
@@ -65,11 +65,11 @@ ws.onmessage = function(e) {
     };
 };
 
-var init_tree = function() {
+var init_tree = function(tree_name) {
     $('.tree li:has(ul)').addClass('parent_li');
-    $('.tree li >span').on('click', function(e) {
+    $('#'+tree_name+' li >span').on('click', function(e) {
         console.log($(this));
-        if ($(this).parents('div')[0].id == 'g_tree') {
+        if (tree_name == 'g_tree') {
             g_selected = $(this).context.id;
             // reset add group father name
             $('#g_a_f_name').html(group_name[g_selected]);
@@ -83,7 +83,7 @@ var init_tree = function() {
             $('#g_tree li >span').filter('.selector').toggleClass('selector');
             $(this).toggleClass('selector');
         }
-        if ($(this).parents('div')[0].id == 'r_tree') {
+        if (tree_name == 'r_tree') {
             if ((r_selected != $(this).context.id) && ($('#r_tree li >span').filter('.easy_selector').length > 0)) {
                 $('#r_tree li >span').filter('.easy_selector').removeClass('easy_selector');
             }
@@ -106,7 +106,7 @@ var init_tree = function() {
             // 修改删除角色权限模态框上的值
             $('#p_d_r_name').html(role_name[r_selected]);
         }
-        if ($(this).parents('div')[0].id == 'p_tree') {
+        if (tree_name == 'p_tree') {
             if ((p_selected != $(this).context.id) && ($('#p_tree li >span').filter('.easy_selector').length > 0)) {
                 $('#p_tree li >span').filter('.easy_selector').removeClass('easy_selector');
             }
@@ -120,7 +120,7 @@ var init_tree = function() {
             // 修改删除角色权限模态框上的值
             $('#p_d_p_name').html(per_name[p_selected]);
         }
-        if ($(this).parents('div')[0].id == 'u_tree') {
+        if (tree_name == 'u_tree') {
             if ((u_selected != $(this).context.id) && ($('#u_tree li >span').filter('.easy_selector').length > 0)) {
                 $('#u_tree li >span').filter('.easy_selector').removeClass('easy_selector');
             }
