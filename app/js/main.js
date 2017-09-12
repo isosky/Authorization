@@ -68,7 +68,7 @@ ws.onmessage = function(e) {
 var init_tree = function() {
     $('.tree li:has(ul)').addClass('parent_li');
     $('.tree li >span').on('click', function(e) {
-        // console.log($(this));
+        console.log($(this));
         if ($(this).parents('div')[0].id == 'g_tree') {
             g_selected = $(this).context.id;
             // reset add group father name
@@ -84,7 +84,10 @@ var init_tree = function() {
             $(this).toggleClass('selector');
         }
         if ($(this).parents('div')[0].id == 'r_tree') {
-            $('#r_tree li >span').filter('.easy_selector').toggleClass('easy_selector');
+            if ((r_selected != $(this).context.id) && ($('#r_tree li >span').filter('.easy_selector').length > 0)) {
+                $('#r_tree li >span').filter('.easy_selector').removeClass('easy_selector');
+            }
+            // $('#r_tree li >span').filter('.easy_selector').toggleClass('easy_selector');
             $(this).toggleClass('easy_selector');
             // 将选中的id存到全局变量中
             r_selected = $(this).context.id;
@@ -104,7 +107,7 @@ var init_tree = function() {
             $('#p_d_r_name').html(role_name[r_selected]);
         }
         if ($(this).parents('div')[0].id == 'p_tree') {
-            if ($('#p_tree li >span').filter('.easy_selector').length > 0) {
+            if ((p_selected != $(this).context.id) && ($('#p_tree li >span').filter('.easy_selector').length > 0)) {
                 $('#p_tree li >span').filter('.easy_selector').removeClass('easy_selector');
             }
             $(this).toggleClass('easy_selector');
@@ -118,7 +121,7 @@ var init_tree = function() {
             $('#p_d_p_name').html(per_name[p_selected]);
         }
         if ($(this).parents('div')[0].id == 'u_tree') {
-            if ($('#u_tree li >span').filter('.easy_selector').length > 0) {
+            if ((u_selected != $(this).context.id) && ($('#u_tree li >span').filter('.easy_selector').length > 0)) {
                 $('#u_tree li >span').filter('.easy_selector').removeClass('easy_selector');
             }
             $(this).toggleClass('easy_selector');
@@ -226,7 +229,7 @@ $("#p_d_s").bind("click", function() {
 // 业务逻辑,为角色添加权限
 $("#p_a_r_s").bind("click", function() {
     console.log("add_role_per");
-    ws.send("add_role_per," + r_selected + "," + p_selected+','+g_selected);
+    ws.send("add_role_per," + r_selected + "," + p_selected + ',' + g_selected);
     $('#p_a_r_name').val('');
     $('#p_a_p_name').val('');
 })
@@ -234,7 +237,7 @@ $("#p_a_r_s").bind("click", function() {
 // 业务逻辑,为角色删除权限
 $("#p_d_r_s").bind("click", function() {
     console.log("delete_role_per");
-    ws.send("delete_role_per," + r_selected + "," + p_selected+','+g_selected);
+    ws.send("delete_role_per," + r_selected + "," + p_selected + ',' + g_selected);
     $('#p_d_r_name').val('');
     $('#p_d_p_name').val('');
 })
