@@ -298,6 +298,7 @@ $("#r_u_a_s").bind("click", function() {
     if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
         console.log("r_u_a");
         ws.send('role_add_user,' + r_selected + ',' + u_selected + ',' + g_selected);
+        u_selected=r_selected='';
     } else {
         alert('asd');
     }
@@ -307,8 +308,9 @@ $("#r_u_a_s").bind("click", function() {
 $("#r_u_d_s").bind("click", function() {
     console.log("r_u_d");
     if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
-        console.log("r_u_a");
+        console.log("r_u_d");
         ws.send('role_delete_user,' + r_selected + ',' + u_selected + ',' + g_selected);
+        u_selected=r_selected='';
     } else {
         alert('asd');
     }
