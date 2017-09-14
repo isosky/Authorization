@@ -165,6 +165,30 @@
         <button class="md-close m_button">Close me!</button>
     </div>
 </div>
+<!-- 模态框_将选中用户添加到角色中 -->
+<div class="md-modal md-effect-1" id="modal-15">
+    <div class="md-content">
+        <h3>将选中用户添加到角色中</h3>
+        <div> 角色名称:
+            <span id="r_u_a_r_name">asd</span> 用户名称:
+            <span id="r_u_a_u_name">asd</span>
+            <button id="r_u_a_s" class="md-submit m_button">Submit It!</button>
+            <button class="md-close m_button">Close me!</button>
+        </div>
+    </div>
+</div>
+<!-- 模态框_将选中用户的角色删除 -->
+<div class="md-modal md-effect-1" id="modal-16">
+    <div class="md-content">
+        <h3>将选中用户的角色删除</h3>
+        <div> 角色名称:
+            <span id="r_u_d_r_name">asd</span> 用户名称:
+            <span id="r_u_d_u_name">asd</span>
+            <button id="r_u_d_s" class="md-submit m_button">Submit It!</button>
+            <button class="md-close m_button">Close me!</button>
+        </div>
+    </div>
+</div>
 
 <body>
     <div class="left_div">
@@ -181,9 +205,8 @@
             <button id="r_a" class="md-trigger" data-modal="modal-4">添加角色</button>
             <button id="r_m" class="md-trigger" data-modal="modal-5">修改角色</button>
             <button id="r_d" class="md-trigger" data-modal="modal-6">删除角色</button>
-            <button id="r_u_a" class="md-trigger" data-modal="modal-15">添加用户</button>
-            <button id="r_d_m" class="md-trigger" data-modal="modal-16">删除用户</button>
-
+            <button id="r_u_a" class="md-trigger" data-modal="modal-15">添加员工</button>
+            <button id="r_u_d" class="md-trigger" data-modal="modal-16">删除员工</button>
         </div>
         <div id="r_tree" class="div_n tree well" style="overflow:auto"> </div>
     </div>

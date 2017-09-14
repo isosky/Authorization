@@ -67,7 +67,7 @@ ws.onmessage = function(e) {
 
 var init_tree = function(tree_name) {
     $('.tree li:has(ul)').addClass('parent_li');
-    $('#'+tree_name+' li >span').on('click', function(e) {
+    $('#' + tree_name + ' li >span').on('click', function(e) {
         console.log($(this));
         if (tree_name == 'g_tree') {
             g_selected = $(this).context.id;
@@ -105,6 +105,11 @@ var init_tree = function(tree_name) {
             $('#p_a_r_name').html(role_name[r_selected]);
             // 修改删除角色权限模态框上的值
             $('#p_d_r_name').html(role_name[r_selected]);
+            // 修改模态框_将选中用户添加到角色中
+            $('#r_u_a_r_name').html(role_name[r_selected]);
+            // 修改模态框_将选中用户的角色删除
+            $('#r_u_d_r_name').html(role_name[r_selected]);
+
         }
         if (tree_name == 'p_tree') {
             if ((p_selected != $(this).context.id) && ($('#p_tree li >span').filter('.easy_selector').length > 0)) {
@@ -119,6 +124,10 @@ var init_tree = function(tree_name) {
             $('#p_a_p_name').html(per_name[p_selected]);
             // 修改删除角色权限模态框上的值
             $('#p_d_p_name').html(per_name[p_selected]);
+            // 修改模态框_将选中用户添加到角色中
+            $('#r_u_a_u_name').html(per_name[p_selected]);
+            // 修改模态框_将选中用户的角色删除
+            $('#r_u_d_u_name').html(per_name[p_selected]);
         }
         if (tree_name == 'u_tree') {
             if ((u_selected != $(this).context.id) && ($('#u_tree li >span').filter('.easy_selector').length > 0)) {
