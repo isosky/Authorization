@@ -25,7 +25,7 @@ def addgroup(g_f_id, g_name):
     db.cur.execute('SELECT max(g_id) FROM auth_group')
     max_id = db.cur.fetchone()[0] + 1
     try:
-        temp_sql = "INSERT INTO auth_group (g_id, g_f_id, group_name) VALUES (%s,%s,'%s')"%(max_id, g_f_id, g_name)
+        temp_sql = "INSERT INTO auth_group (g_id, g_f_id, group_name) VALUES (%s,%s,'%s')" % (max_id, g_f_id, g_name)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -35,7 +35,7 @@ def addgroup(g_f_id, g_name):
 def modifygroup(g_id, g_name):
     db = dbc()
     try:
-        temp_sql = "UPDATE auth_group SET group_name='%s' WHERE g_id=%s"%(g_name, g_id)
+        temp_sql = "UPDATE auth_group SET group_name='%s' WHERE g_id=%s" % (g_name, g_id)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -47,7 +47,7 @@ def deletegroup(g_id, delete_sub):
     db = dbc()
     if delete_sub:
         try:
-            temp_sql = 'select g_id from auth_group where g_f_id= %s'%g_id
+            temp_sql = 'select g_id from auth_group where g_f_id= %s' % g_id
             db.cur.execute(temp_sql)
             d_gids = db.cur.fetchall()
             for gid in d_gids:
@@ -60,17 +60,17 @@ def deletegroup(g_id, delete_sub):
             print err
     else:
         try:
-            temp_sql = "select user_id from auth_user where g_id=%s"%g_id
+            temp_sql = "select user_id from auth_user where g_id=%s" % g_id
             db.cur.execute(temp_sql)
             if db.cur.rowcount > 1:
                 for user_id in db.cur.fetchall():
                     deleteuser(user_id=user_id)
-            temp_sql = "select r_id from auth_role_group where g_id=%s"%g_id
+            temp_sql = "select r_id from auth_role_group where g_id=%s" % g_id
             db.cur.execute(temp_sql)
             if db.cur.rowcount > 1:
                 for role_id in db.cur.fetchall():
                     deleterole(r_id=role_id)
-            temp_sql = "DELETE from  auth_group  WHERE g_id=%s"%g_id
+            temp_sql = "DELETE from  auth_group  WHERE g_id=%s" % g_id
             db.cur.execute(temp_sql)
         except Exception as err:
             print err
@@ -80,7 +80,7 @@ def deletegroup(g_id, delete_sub):
 def checksub(g_id):
     db = dbc()
     try:
-        temp_sql = 'select g_id from auth_group where g_f_id= %s'%g_id
+        temp_sql = 'select g_id from auth_group where g_f_id= %s' % g_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 1:
             d_gids = db.cur.fetchall()
@@ -97,7 +97,7 @@ def addrole(g_id, r_name):
     db.cur.execute('SELECT max(r_id) FROM auth_role_group')
     max_id = db.cur.fetchone()[0] + 1
     try:
-        temp_sql = "INSERT INTO auth_role_group (r_id, g_id, role_name) VALUES (%s,%s,'%s')"%(max_id, g_id, r_name)
+        temp_sql = "INSERT INTO auth_role_group (r_id, g_id, role_name) VALUES (%s,%s,'%s')" % (max_id, g_id, r_name)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -107,7 +107,7 @@ def addrole(g_id, r_name):
 def modifyrole(r_id, r_name):
     db = dbc()
     try:
-        temp_sql = "UPDATE auth_role_group SET role_name= '%s' where r_id=%s"%(r_name, r_id)
+        temp_sql = "UPDATE auth_role_group SET role_name= '%s' where r_id=%s" % (r_name, r_id)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -117,17 +117,17 @@ def modifyrole(r_id, r_name):
 def deleterole(r_id):
     db = dbc()
     try:
-        temp_sql = "select p_id from auth_role_per where r_id = %s"%r_id
+        temp_sql = "select p_id from auth_role_per where r_id = %s" % r_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             for temp in db.cur.fetchall():
                 deleterole_per(r_id, temp[0])
             db.commit()
         # 将角色对应的用户的角色清空
-        temp_sql = "update auth_user set r_id=NULL where r_id=%s"%r_id
+        temp_sql = "update auth_user set r_id=NULL where r_id=%s" % r_id
         db.cur.execute(temp_sql)
         db.commit()
-        temp_sql = "DELETE from  auth_role_group  WHERE r_id=%s"%r_id
+        temp_sql = "DELETE from  auth_role_group  WHERE r_id=%s" % r_id
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -140,7 +140,7 @@ def adduser(g_id, r_id, user_name):
     db.cur.execute('SELECT max(user_id) FROM auth_user')
     max_id = db.cur.fetchone()[0] + 1
     try:
-        temp_sql = "INSERT INTO auth_user (user_id, g_id, r_id, user_name, isroot,login_name,pwd) VALUES (%s,%s,%s,'%s',%s,'%s','%s')"%(
+        temp_sql = "INSERT INTO auth_user (user_id, g_id, r_id, user_name, isroot,login_name,pwd) VALUES (%s,%s,%s,'%s',%s,'%s','%s')" % (
             max_id, g_id, r_id, user_name, False, 'lcf', None)
         # print  temp_sql
         db.cur.execute(temp_sql)
@@ -150,11 +150,10 @@ def adduser(g_id, r_id, user_name):
 
 
 # todo bug 因为改角色的话没有改对应的权限
-def modifyuser(user_id, g_id, r_id, u_name):
+def modifyuser(user_id, r_id):
     db = dbc()
     try:
-        temp_sql = "Update auth_user set (g_id,r_id,user_name) = (%s,%s,'%s') WHERE user_id=%s"%(
-            g_id, r_id, u_name, user_id)
+        temp_sql = "Update auth_user set r_id = %s WHERE user_id=%s" % (r_id, user_id)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -165,7 +164,7 @@ def updatepwd(user_id, pwd):
     # todo 验证
     db = dbc()
     try:
-        temp_sql = "Update auth_user set pwd = '%s' WHERE user_id=%s"%(pwd, user_id)
+        temp_sql = "Update auth_user set pwd = '%s' WHERE user_id=%s" % (pwd, user_id)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -175,13 +174,13 @@ def updatepwd(user_id, pwd):
 def deleteuser(user_id):
     db = dbc()
     try:
-        temp_sql = "select p_id from auth_user_per where user_id = %s"%user_id
+        temp_sql = "select p_id from auth_user_per where user_id = %s" % user_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 1:
             for temp in db.cur.fetchall():
                 deleteuser_per(user_id, temp[0])
             db.commit()
-        temp_sql = "Delete from auth_user WHERE  user_id=%s"%user_id
+        temp_sql = "Delete from auth_user WHERE  user_id=%s" % user_id
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -191,7 +190,7 @@ def deleteuser(user_id):
 def adduser_per(user_id, p_id):
     db = dbc()
     try:
-        temp_sql = "Insert into auth_user_per VALUES (%s,%s)"%(user_id, p_id)
+        temp_sql = "Insert into auth_user_per VALUES (%s,%s)" % (user_id, p_id)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -201,12 +200,12 @@ def adduser_per(user_id, p_id):
 def addrole_per(r_id, p_id):
     db = dbc()
     try:
-        temp_sql = "Insert into auth_role_per VALUES (%s,%s)"%(r_id, p_id)
+        temp_sql = "Insert into auth_role_per VALUES (%s,%s)" % (r_id, p_id)
         db.cur.execute(temp_sql)
         db.commit()
         # 对这个角色的每个员工增加这个权限
         # 一个人只有一个角色
-        temp_sql = 'select user_id from auth_user where r_id=%s'%r_id
+        temp_sql = 'select user_id from auth_user where r_id=%s' % r_id
         db.cur.execute(temp_sql)
         all_user = db.cur.fetchall()
         for user in all_user:
@@ -219,10 +218,10 @@ def addrole_per(r_id, p_id):
 def addrole_user(r_id, user_id):
     db = dbc()
     try:
-        temp_sql = "update auth_user set r_id=%s where user_id=%s"%(r_id, user_id)
+        temp_sql = "update auth_user set r_id=%s where user_id=%s" % (r_id, user_id)
         db.cur.execute(temp_sql)
         db.commit()
-        temp_sql = "select p_id from auth_role_per where r_id=%s"%r_id
+        temp_sql = "select p_id from auth_role_per where r_id=%s" % r_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             for pid in db.cur.fetchall():
@@ -234,10 +233,10 @@ def addrole_user(r_id, user_id):
 def deleterole_user(r_id, user_id):
     db = dbc()
     try:
-        temp_sql = "update auth_user set r_id=NULL where user_id=%s"%user_id
+        temp_sql = "update auth_user set r_id=NULL where user_id=%s" % user_id
         db.cur.execute(temp_sql)
         db.commit()
-        temp_sql = "select p_id from auth_role_per where r_id=%s"%r_id
+        temp_sql = "select p_id from auth_role_per where r_id=%s" % r_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             for pid in db.cur.fetchall():
@@ -249,10 +248,10 @@ def deleterole_user(r_id, user_id):
 def addgroup_per(g_id, p_id):
     db = dbc()
     try:
-        temp_sql = "Insert into auth_group_per VALUES (%s,%s)"%(g_id, p_id)
+        temp_sql = "Insert into auth_group_per VALUES (%s,%s)" % (g_id, p_id)
         db.cur.execute(temp_sql)
         # 对这个部门的每个员工增加这个权限
-        temp_sql = 'select user_id from auth_user where g_id=%s'%g_id
+        temp_sql = 'select user_id from auth_user where g_id=%s' % g_id
         db.cur.execute(temp_sql)
         all_user = db.cur.fetchall()
         for user in all_user:
@@ -265,7 +264,7 @@ def addgroup_per(g_id, p_id):
 def deleteuser_per(user_id, p_id):
     db = dbc()
     try:
-        temp_sql = "delete from auth_user_per where user_id=%s and p_id=%s"%(user_id, p_id)
+        temp_sql = "delete from auth_user_per where user_id=%s and p_id=%s" % (user_id, p_id)
         db.cur.execute(temp_sql)
     except Exception as err:
         print err
@@ -275,11 +274,11 @@ def deleteuser_per(user_id, p_id):
 def deleterole_per(r_id, p_id):
     db = dbc()
     try:
-        temp_sql = "delete from auth_role_per where r_id=%s and p_id=%s"%(r_id, p_id)
+        temp_sql = "delete from auth_role_per where r_id=%s and p_id=%s" % (r_id, p_id)
         db.cur.execute(temp_sql)
         db.commit()
         # 对这个角色的每个员工删除权限
-        temp_sql = "select user_id from auth_user WHERE  r_id=%s"%r_id
+        temp_sql = "select user_id from auth_user WHERE  r_id=%s" % r_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             all_user = db.cur.fetchall()
@@ -293,10 +292,10 @@ def deleterole_per(r_id, p_id):
 def deletegroup_per(g_id, p_id):
     db = dbc()
     try:
-        temp_sql = "delete from auth_group_per where g_id=%s and p_id=%s"%(g_id, p_id)
+        temp_sql = "delete from auth_group_per where g_id=%s and p_id=%s" % (g_id, p_id)
         db.cur.execute(temp_sql)
         # 对这个部门的每个员工删除权限
-        temp_sql = "select * from auth_user WHERE  g_id=%s"%g_id
+        temp_sql = "select * from auth_user WHERE  g_id=%s" % g_id
         db.cur.execute(temp_sql)
         all_user = db.cur.fetchall()
         for user in all_user:
@@ -315,7 +314,7 @@ def query_group_tree():
 
 
 def get_sub(root, db):
-    temp_sql = 'select g_id from auth_group where g_f_id=%s'%root
+    temp_sql = 'select g_id from auth_group where g_f_id=%s' % root
     db.cur.execute(temp_sql)
     r = {}
     if db.cur.rowcount > 0:
@@ -331,7 +330,7 @@ def get_sub(root, db):
 
 def query_group_user(g_id):
     db = dbc()
-    temp_sql = 'select user_id,user_name,r_id from auth_user where g_id=%s ORDER BY user_id'%g_id
+    temp_sql = 'select user_id,user_name,r_id from auth_user where g_id=%s ORDER BY user_id' % g_id
     try:
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
@@ -347,7 +346,7 @@ def query_group_user(g_id):
 def query_group_role(g_id):
     db = dbc()
     try:
-        temp_sql = "select r_id,role_name from auth_role_group where g_id=%s ORDER BY r_id"%g_id
+        temp_sql = "select r_id,role_name from auth_role_group where g_id=%s ORDER BY r_id" % g_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             temp = db.cur.fetchall()
@@ -424,7 +423,7 @@ def add_per(p_name):
     try:
         db.cur.execute("SELECT max(p_id) FROM auth_per")
         max_id = db.cur.fetchone()[0] + 1
-        temp_sql = ("insert into auth_per (p_id, permit_name) VALUES (%s,'%s')")%(max_id, p_name)
+        temp_sql = ("insert into auth_per (p_id, permit_name) VALUES (%s,'%s')") % (max_id, p_name)
         db.cur.execute(temp_sql)
         db.commit()
     except Exception as err:
@@ -434,7 +433,7 @@ def add_per(p_name):
 def modifyper(p_id, new_name):
     db = dbc()
     try:
-        temp_sql = "UPDATE auth_per set permit_name = '%s' where p_id =%s"%(new_name, p_id)
+        temp_sql = "UPDATE auth_per set permit_name = '%s' where p_id =%s" % (new_name, p_id)
         db.cur.execute(temp_sql)
         db.commit()
     except Exception as err:
@@ -444,12 +443,12 @@ def modifyper(p_id, new_name):
 def deleteper(p_id):
     db = dbc()
     try:
-        temp_sql = "select r_id from auth_role_per where p_id =%s"%p_id
+        temp_sql = "select r_id from auth_role_per where p_id =%s" % p_id
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
             for i in db.cur.fetchall():
                 deleterole_per(i[0], p_id)
-        temp_sql = "delete from auth_per where p_id=%s"%p_id
+        temp_sql = "delete from auth_per where p_id=%s" % p_id
         db.cur.execute(temp_sql)
         db.commit()
     except Exception as err:

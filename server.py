@@ -160,6 +160,36 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
+                elif temp[0] == 'u_a_s':
+                    adduser(g_id=temp[2], r_id=temp[3], user_name=temp[1])
+                    gid=temp[2]
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
+                elif temp[0] == 'u_m_s':
+                    modifyuser(user_id=temp[1], r_id=temp[3])
+                    gid = temp[2]
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
+                elif temp[0] == 'u_d_s':
+                    deleteuser(user_id=temp[1])
+                    gid = temp[2]
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
                 if data:
                     i.write_message(data)
 

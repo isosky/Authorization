@@ -23,6 +23,7 @@ ws.onmessage = function(e) {
         };
         role_name[''] = '未选中';
         temp = getdata['r_p_list'];
+        r_p_list=[];
         for (var i in temp) {
             console.log(i, temp[i]);
             r_p_list[i] = temp[i];
@@ -41,6 +42,8 @@ ws.onmessage = function(e) {
         _tree.empty();
         productchild_easy(temp, _tree);
         init_tree('r_tree');
+        init_select('u_a_select', temp);
+        init_select('u_m_select', temp);
     };
     if (getdata['name'] == 'per_list') {
         temp = getdata['data'];
@@ -59,6 +62,7 @@ ws.onmessage = function(e) {
         _tree.empty();
         productchild_easy(temp, _tree);
         init_tree('u_tree');
+        role_user = {};
         for (var i in temp) {
             row = temp[i];
             if (!(row[2] in role_user)) {
@@ -155,6 +159,9 @@ var init_tree = function(tree_name) {
             $('#r_u_a_u_name').html(user_name[u_selected]);
             // 修改模态框_将选中用户的角色删除
             $('#r_u_d_u_name').html(user_name[u_selected]);
+            // 修改_修改名称
+            $('#u_m_name').val(user_name[u_selected]);
+
         }
     });
 };
@@ -183,6 +190,16 @@ function productchild_easy(data, _root) {
         var li = $("<li><span id=" + data[i][0] + "><i class='icon-leaf'></i>" + data[i][1] + "</span>");
         _root.append(li);
     };
+}
+
+function init_select(selected, data) {
+    var _this = $('#' + selected);
+    _this.empty();
+    for (var i in data) {
+        console.log(i, data[i]);
+        var temp = $("<option value=" + data[i][0] + ">" + data[i][1] + "</option>");
+        _this.append(temp);
+    }
 }
 
 
@@ -298,7 +315,7 @@ $("#r_u_a_s").bind("click", function() {
     if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
         console.log("r_u_a");
         ws.send('role_add_user,' + r_selected + ',' + u_selected + ',' + g_selected);
-        u_selected=r_selected='';
+        u_selected = r_selected = '';
     } else {
         alert('asd');
     }
@@ -310,10 +327,34 @@ $("#r_u_d_s").bind("click", function() {
     if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
         console.log("r_u_d");
         ws.send('role_delete_user,' + r_selected + ',' + u_selected + ',' + g_selected);
-        u_selected=r_selected='';
+        u_selected = r_selected = '';
     } else {
         alert('asd');
     }
+})
+
+
+// 添加用户
+$("#u_a_s").bind("click", function() {
+    console.log("u_a_s");
+    var temp_name = $('#u_a_name').val();
+    var r = $('#u_a_select').val();
+    ws.send('u_a_s,' + temp_name + ',' + g_selected + ',' + r);
+})
+
+// 修改用户
+$("#u_m_s").bind("click", function() {
+    console.log("u_m_s");
+    var temp_name = $('#u_m_name').val();
+    var r = $('#u_m_select').val();
+    ws.send('u_m_s,' + u_selected + ',' + g_selected + ',' + r);
+})
+
+// 删除用户
+$("#u_d_s").bind("click", function() {
+    console.log("u_d_s");
+    ws.send('u_d_s,' + u_selected + ',' + g_selected);
+    u_selected = '';
 })
 
 // 添加用户树节点颜色
