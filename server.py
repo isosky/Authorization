@@ -41,24 +41,25 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         for i in cls.waiters:
             if i == app:
                 print message
+                data = []
                 temp = message.split(',')
                 if temp[0] == 'initv':
                     data = initv()
-                if temp[0] == 'q_tree':
+                elif temp[0] == 'q_tree':
                     data = query_group_tree()
-                if temp[0] == 'q_g_r':
+                elif temp[0] == 'q_g_r':
                     data = query_group_role()
-                if temp[0] == 'addgroup':
+                elif temp[0] == 'addgroup':
                     addgroup(temp[1], temp[2])
                     data = initv()
                     i.write_message(data)
                     data = query_group_tree()
-                if temp[0] == 'modifygroup':
+                elif temp[0] == 'modifygroup':
                     modifygroup(temp[1], temp[2])
                     data = initv()
                     i.write_message(data)
                     data = query_group_tree()
-                if temp[0] == 'deletegroup':
+                elif temp[0] == 'deletegroup':
                     if temp[2] == 'false':
                         status = False
                     else:
@@ -67,25 +68,25 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = initv()
                     i.write_message(data)
                     data = query_group_tree()
-                if temp[0] == 'selectgroup':
+                elif temp[0] == 'selectgroup':
                     gid = temp[1]
                     data = query_group_role(gid)
                     i.write_message(data)
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
-                if temp[0] == 'add_per':
+                elif temp[0] == 'add_per':
                     per_name = temp[1]
                     add_per(per_name)
                     data = query_per_name()
-                if temp[0] == 'modify_per':
+                elif temp[0] == 'modify_per':
                     modifyper(temp[1], temp[2])
                     data = query_per_name()
-                if temp[0] == 'delete_per':
+                elif temp[0] == 'delete_per':
                     temp = message.split(',')[1]
                     deleteper(temp)
                     data = query_per_name()
-                if temp[0] == 'add_role_per':
+                elif temp[0] == 'add_role_per':
                     r_id = temp[1]
                     p_id = temp[2]
                     addrole_per(r_id=r_id, p_id=p_id)
@@ -97,7 +98,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
-                if temp[0] == 'delete_role_per':
+                elif temp[0] == 'delete_role_per':
                     r_id = temp[1]
                     p_id = temp[2]
                     deleterole_per(r_id=r_id, p_id=p_id)
@@ -109,7 +110,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
-                if temp[0] == 'add_role':
+                elif temp[0] == 'add_role':
                     gid = temp[1]
                     addrole(gid, temp[2])
                     data = initv()
@@ -119,7 +120,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
-                if temp[0] == 'modify_role':
+                elif temp[0] == 'modify_role':
                     gid = temp[3]
                     modifyrole(temp[1], temp[2])
                     data = initv()
@@ -129,7 +130,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
-                if temp[0] == 'delete_role':
+                elif temp[0] == 'delete_role':
                     gid = temp[2]
                     deleterole(temp[1])
                     data = initv()
@@ -139,7 +140,28 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_group_user(gid)
                     i.write_message(data)
                     data = query_per_name()
-                i.write_message(data)
+                elif temp[0] == 'role_add_user':
+                    addrole_user(r_id=temp[1], user_id=temp[2])
+                    gid = temp[3]
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
+                elif temp[0] == 'role_delete_user':
+                    deleterole_user(r_id=temp[1], user_id=temp[2])
+                    gid = temp[3]
+                    data = initv()
+                    i.write_message(data)
+                    data = query_group_role(gid)
+                    i.write_message(data)
+                    data = query_group_user(gid)
+                    i.write_message(data)
+                    data = query_per_name()
+                if data:
+                    i.write_message(data)
 
     def on_message(self, message):
         WebSocketHandler.pushdata(message, self)

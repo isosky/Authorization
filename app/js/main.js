@@ -2,6 +2,7 @@ var ws = new WebSocket("ws://localhost:9909/ws");
 var group_name = [];
 var role_name = [];
 var per_name = [];
+var user_name = [];
 var g_selected, r_selected, u_selected, p_selected;
 var role_user = {};
 var r_p_list = [];
@@ -14,16 +15,18 @@ ws.onmessage = function(e) {
         temp = getdata['g_name'];
         for (var i in temp) {
             group_name[temp[i][0]] = temp[i][1];
-        }
+        };
+        group_name[''] = '未选中';
         temp = getdata['r_name'];
         for (var i in temp) {
             role_name[temp[i][0]] = temp[i][1];
-        }
+        };
+        role_name[''] = '未选中';
         temp = getdata['r_p_list'];
         for (var i in temp) {
             console.log(i, temp[i]);
             r_p_list[i] = temp[i];
-        }
+        };
     };
     if (getdata['name'] == 'q_tree') {
         temp = getdata['data'];
@@ -43,7 +46,8 @@ ws.onmessage = function(e) {
         temp = getdata['data'];
         for (var i in temp) {
             per_name[temp[i][0]] = temp[i][1];
-        }
+        };
+        per_name[''] = '未选中';
         var _tree = $('#p_tree');
         _tree.empty();
         productchild_easy(temp, _tree);
@@ -59,9 +63,11 @@ ws.onmessage = function(e) {
             row = temp[i];
             if (!(row[2] in role_user)) {
                 role_user[row[2]] = [];
-            }
+            };
+            user_name[row[0]] = row[1];
             role_user[row[2]].push(row[0]);
-        }
+        };
+        user_name[''] = '未选中';
     };
 };
 
@@ -90,7 +96,11 @@ var init_tree = function(tree_name) {
             // $('#r_tree li >span').filter('.easy_selector').toggleClass('easy_selector');
             $(this).toggleClass('easy_selector');
             // 将选中的id存到全局变量中
-            r_selected = $(this).context.id;
+            if (r_selected == $(this).context.id) {
+                r_selected = '';
+            } else {
+                r_selected = $(this).context.id;
+            }
             // 将用户树中属于选中部门的员工添加颜色
             _u_root = $('#u_tree');
             coloruser(r_selected, role_user, _u_root);
@@ -117,17 +127,18 @@ var init_tree = function(tree_name) {
             }
             $(this).toggleClass('easy_selector');
             // 将选中的id存到全局变量中
-            p_selected = $(this).context.id;
+            if (p_selected == $(this).context.id) {
+                p_selected = '';
+            } else {
+                p_selected = $(this).context.id;
+            }
             // 修改模态框上的值
             $('#p_d_name').html(per_name[p_selected]);
             // 修改添加角色权限模态框上的值
             $('#p_a_p_name').html(per_name[p_selected]);
             // 修改删除角色权限模态框上的值
             $('#p_d_p_name').html(per_name[p_selected]);
-            // 修改模态框_将选中用户添加到角色中
-            $('#r_u_a_u_name').html(per_name[p_selected]);
-            // 修改模态框_将选中用户的角色删除
-            $('#r_u_d_u_name').html(per_name[p_selected]);
+
         }
         if (tree_name == 'u_tree') {
             if ((u_selected != $(this).context.id) && ($('#u_tree li >span').filter('.easy_selector').length > 0)) {
@@ -135,7 +146,15 @@ var init_tree = function(tree_name) {
             }
             $(this).toggleClass('easy_selector');
             // 将选中的id存到全局变量中
-            u_selected = $(this).context.id;
+            if (u_selected == $(this).context.id) {
+                u_selected = '';
+            } else {
+                u_selected = $(this).context.id;
+            }
+            // 修改模态框_将选中用户添加到角色中
+            $('#r_u_a_u_name').html(user_name[u_selected]);
+            // 修改模态框_将选中用户的角色删除
+            $('#r_u_d_u_name').html(user_name[u_selected]);
         }
     });
 };
@@ -271,6 +290,28 @@ $("#r_m_s").bind("click", function() {
 $("#r_d_s").bind("click", function() {
     console.log("delete role");
     ws.send("delete_role," + r_selected + ',' + g_selected);
+})
+
+// 业务逻辑,删除角色
+$("#r_u_a_s").bind("click", function() {
+    console.log("r_u_a");
+    if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
+        console.log("r_u_a");
+        ws.send('role_add_user,' + r_selected + ',' + u_selected + ',' + g_selected);
+    } else {
+        alert('asd');
+    }
+})
+
+// 业务逻辑,删除角色
+$("#r_u_d_s").bind("click", function() {
+    console.log("r_u_d");
+    if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
+        console.log("r_u_a");
+        ws.send('role_delete_user,' + r_selected + ',' + u_selected + ',' + g_selected);
+    } else {
+        alert('asd');
+    }
 })
 
 // 添加用户树节点颜色

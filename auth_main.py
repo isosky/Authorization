@@ -149,6 +149,7 @@ def adduser(g_id, r_id, user_name):
     db.commit()
 
 
+# todo bug 因为改角色的话没有改对应的权限
 def modifyuser(user_id, g_id, r_id, u_name):
     db = dbc()
     try:
@@ -213,6 +214,36 @@ def addrole_per(r_id, p_id):
     except Exception as err:
         print err
     db.commit()
+
+
+def addrole_user(r_id, user_id):
+    db = dbc()
+    try:
+        temp_sql = "update auth_user set r_id=%s where user_id=%s"%(r_id, user_id)
+        db.cur.execute(temp_sql)
+        db.commit()
+        temp_sql = "select p_id from auth_role_per where r_id=%s"%r_id
+        db.cur.execute(temp_sql)
+        if db.cur.rowcount > 0:
+            for pid in db.cur.fetchall():
+                adduser_per(user_id, pid[0])
+    except Exception as err:
+        print err
+
+
+def deleterole_user(r_id, user_id):
+    db = dbc()
+    try:
+        temp_sql = "update auth_user set r_id=NULL where user_id=%s"%user_id
+        db.cur.execute(temp_sql)
+        db.commit()
+        temp_sql = "select p_id from auth_role_per where r_id=%s"%r_id
+        db.cur.execute(temp_sql)
+        if db.cur.rowcount > 0:
+            for pid in db.cur.fetchall():
+                deleteuser_per(user_id, pid[0])
+    except Exception as err:
+        print err
 
 
 def addgroup_per(g_id, p_id):
