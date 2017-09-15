@@ -8,6 +8,7 @@ from  db import dbc
 import time
 import json
 import random
+import hashlib
 
 
 def random10():
@@ -172,13 +173,17 @@ def updatepwd(user_id, pwd):
     db.commit()
 
 
-def login_check(user_name,pwd):
-    db =dbc()
+def login_check(user_name, pwd):
+    db = dbc()
     try:
-        temp_sql = "select * from auth_user where login_name='%s' and pwd='%s'"%(user_name,pwd)
+        temp_sql = "select pwd from auth_user where login_name='%s'"%user_name
         db.cur.execute(temp_sql)
-        if db.cur.rowcount>0:
-            return True
+        if db.cur.rowcount > 0:
+            db_pwd = db.cur.fetchone()[0]
+            if pwd == hashlib.sha1(db_pwd):
+                return True
+            else:
+                return False
         else:
             return False
     except Exception as err:
