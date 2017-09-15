@@ -11,13 +11,6 @@ import tornado.ioloop
 from tornado.options import define, options
 from auth_main import *
 
-import tornado.httpserver
-import tornado.web
-import tornado.websocket
-import tornado.ioloop
-from tornado.options import define, options
-from auth_main import *
-
 define("port", default=9909, help="run on the given port", type=int)
 tornado.options.parse_command_line()
 
@@ -29,12 +22,20 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self):
-        WebSocketHandler.waiters.add(self)
-        print 'open'
+        args = self.request.arguments
+        pwd = args['pwd'][0]
+        username = args['user'][0]
+        print args
+        if login_check(user_name=username,pwd=pwd):
+            WebSocketHandler.waiters.add(self)
+            print 'open'
+        else:
+            self.close()
         # print self.waiters
 
     def on_close(self):
-        WebSocketHandler.waiters.remove(self)
+        if self in WebSocketHandler.waiters:
+            WebSocketHandler.waiters.remove(self)
 
     @classmethod
     def pushdata(cls, message, app):
