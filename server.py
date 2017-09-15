@@ -22,16 +22,19 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self):
-        args = self.request.arguments
-        pwd = args['pwd'][0]
-        username = args['user'][0]
-        # print args
-        if login_check(user_name=username,pwd=pwd):
-            WebSocketHandler.waiters.add(self)
-            print 'open'
+        if self.request.arguments:
+            args = self.request.arguments
+            pwd = args['pwd'][0]
+            username = args['user'][0]
+            # print args
+            if login_check(user_name=username, pwd=pwd):
+                WebSocketHandler.waiters.add(self)
+                print 'open'
+            else:
+                self.close()
         else:
             self.close()
-        # print self.waiters
+            # print self.waiters
 
     def on_close(self):
         if self in WebSocketHandler.waiters:
@@ -163,7 +166,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     data = query_per_name()
                 elif temp[0] == 'u_a_s':
                     adduser(g_id=temp[2], r_id=temp[3], user_name=temp[1])
-                    gid=temp[2]
+                    gid = temp[2]
                     data = initv()
                     i.write_message(data)
                     data = query_group_role(gid)
