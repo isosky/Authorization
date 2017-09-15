@@ -23,7 +23,7 @@ ws.onmessage = function(e) {
         };
         role_name[''] = '未选中';
         temp = getdata['r_p_list'];
-        r_p_list=[];
+        r_p_list = [];
         for (var i in temp) {
             console.log(i, temp[i]);
             r_p_list[i] = temp[i];
@@ -35,6 +35,23 @@ ws.onmessage = function(e) {
         _tree.empty();
         productchild(temp, _tree);
         init_tree('g_tree');
+    };
+    if (getdata['name'] == 'user_list') {
+        temp = getdata['data'];
+        var _tree = $('#u_tree');
+        _tree.empty();
+        productchild_easy(temp, _tree);
+        init_tree('u_tree');
+        role_user = {};
+        for (var i in temp) {
+            row = temp[i];
+            if (!(row[2] in role_user)) {
+                role_user[row[2]] = [];
+            };
+            user_name[row[0]] = row[1];
+            role_user[row[2]].push(row[0]);
+        };
+        user_name[''] = '未选中';
     };
     if (getdata['name'] == 'role_list') {
         temp = getdata['data'];
@@ -56,23 +73,7 @@ ws.onmessage = function(e) {
         productchild_easy(temp, _tree);
         init_tree('p_tree');
     };
-    if (getdata['name'] == 'user_list') {
-        temp = getdata['data'];
-        var _tree = $('#u_tree');
-        _tree.empty();
-        productchild_easy(temp, _tree);
-        init_tree('u_tree');
-        role_user = {};
-        for (var i in temp) {
-            row = temp[i];
-            if (!(row[2] in role_user)) {
-                role_user[row[2]] = [];
-            };
-            user_name[row[0]] = row[1];
-            role_user[row[2]].push(row[0]);
-        };
-        user_name[''] = '未选中';
-    };
+
 };
 
 var init_tree = function(tree_name) {
@@ -107,6 +108,7 @@ var init_tree = function(tree_name) {
             }
             // 将用户树中属于选中部门的员工添加颜色
             _u_root = $('#u_tree');
+            console.log('asd',role_user);
             coloruser(r_selected, role_user, _u_root);
             // 将权限树中属于选中部门的权限添加颜色
             _p_root = $('#p_tree');
@@ -277,6 +279,7 @@ $("#p_a_r_s").bind("click", function() {
     ws.send("add_role_per," + r_selected + "," + p_selected + ',' + g_selected);
     $('#p_a_r_name').val('');
     $('#p_a_p_name').val('');
+    r_selected='';
 })
 
 // 业务逻辑,为角色删除权限
@@ -285,6 +288,7 @@ $("#p_d_r_s").bind("click", function() {
     ws.send("delete_role_per," + r_selected + "," + p_selected + ',' + g_selected);
     $('#p_d_r_name').val('');
     $('#p_d_p_name').val('');
+    r_selected='';
 })
 
 // 业务逻辑,添加角色
@@ -309,7 +313,7 @@ $("#r_d_s").bind("click", function() {
     ws.send("delete_role," + r_selected + ',' + g_selected);
 })
 
-// 业务逻辑,删除角色
+// 业务逻辑, 将用户添加到角色中
 $("#r_u_a_s").bind("click", function() {
     console.log("r_u_a");
     if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
@@ -321,7 +325,7 @@ $("#r_u_a_s").bind("click", function() {
     }
 })
 
-// 业务逻辑,删除角色
+// 业务逻辑,将用户从角色中删除
 $("#r_u_d_s").bind("click", function() {
     console.log("r_u_d");
     if (r_selected != '' && u_selected != '' && r_selected != undefined && u_selected != undefined) {
@@ -340,6 +344,7 @@ $("#u_a_s").bind("click", function() {
     var temp_name = $('#u_a_name').val();
     var r = $('#u_a_select').val();
     ws.send('u_a_s,' + temp_name + ',' + g_selected + ',' + r);
+    r_selected='';
 })
 
 // 修改用户
