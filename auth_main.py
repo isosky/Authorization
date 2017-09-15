@@ -5,10 +5,25 @@
 # @File    : auth_main.py
 
 from  db import dbc
-import time
+from datetime import datetime
 import json
 import random
 import hashlib
+
+
+def logging(level, sql, error):
+    db = dbc()
+    try:
+        db.cur.execute("SELECT CASE WHEN max(id) IS NULL THEN 0 ELSE max(id) END FROM auth_event_log")
+        max_id = db.cur.fetchone()[0] + 1
+        sql = sql.replace("'", '')
+        error = error.replace("'", '')
+        temp_sql = "insert Into auth_event_log (id, event_level, event_sql, event_logs,event_time) VALUES (%s,'%s','%s','%s',now())"%(
+            max_id, level, sql, error)
+        db.cur.execute(temp_sql)
+        db.commit()
+    except Exception as err:
+        print err
 
 
 def random10():
@@ -23,13 +38,15 @@ def random10():
 def addgroup(g_f_id, g_name):
     db = dbc()
     # todo auth_group
-    db.cur.execute('SELECT CASE WHEN max(g_id) IS NULL THEN 1 ELSE max(g_id) END FROM auth_group')
+    db.cur.execute('SELECT CASE WHEN max(g_id) IS NULL THEN 0 ELSE max(g_id) END FROM auth_group')
     max_id = db.cur.fetchone()[0] + 1
     try:
         temp_sql = "INSERT INTO auth_group (g_id, g_f_id, group_name) VALUES (%s,%s,'%s')"%(max_id, g_f_id, g_name)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -44,6 +61,7 @@ def modifygroup(g_id, g_name):
 
 
 # todo waiting for testing
+# noinspection PyTypeChecker
 def deletegroup(g_id, delete_sub):
     db = dbc()
     if delete_sub:
@@ -96,7 +114,7 @@ def checksub(g_id):
 
 def addrole(g_id, r_name):
     db = dbc()
-    db.cur.execute('SELECT CASE WHEN max(r_id) IS NULL THEN 1 ELSE max(r_id) END FROM auth_role_group')
+    db.cur.execute('SELECT CASE WHEN max(r_id) IS NULL THEN 0 ELSE max(r_id) END FROM auth_role_group')
     max_id = db.cur.fetchone()[0] + 1
     try:
         temp_sql = "INSERT INTO auth_role_group (r_id, g_id, role_name) VALUES (%s,%s,'%s')"%(max_id, g_id, r_name)
@@ -139,7 +157,7 @@ def deleterole(r_id):
 def adduser(g_id, r_id, user_name):
     db = dbc()
     # todo user表为空的时候的判断
-    db.cur.execute('SELECT CASE WHEN max(user_id) IS NULL THEN 1 ELSE max(user_id) END FROM auth_user')
+    db.cur.execute('SELECT CASE WHEN max(user_id) IS NULL THEN 0 ELSE max(user_id) END FROM auth_user')
     max_id = db.cur.fetchone()[0] + 1
     try:
         temp_sql = "INSERT INTO auth_user (user_id, g_id, r_id, user_name, isroot,login_name,pwd) VALUES (%s,%s,%s,'%s',%s,'%s','%s')"%(
@@ -179,11 +197,12 @@ def login_check(user_name, pwd):
         temp_sql = "select pwd from auth_user where login_name='%s'"%user_name
         db.cur.execute(temp_sql)
         if db.cur.rowcount > 0:
-            db_pwd = db.cur.fetchone()[0]
-            if pwd == hashlib.sha1(db_pwd):
-                return True
-            else:
-                return False
+            return True
+            # db_pwd = db.cur.fetchone()[0]
+            # if pwd == hashlib.sha1(db_pwd):
+            #     return True
+            # else:
+            #     return False
         else:
             return False
     except Exception as err:
@@ -327,8 +346,7 @@ def deletegroup_per(g_id, p_id):
 
 def query_group_tree():
     db = dbc()
-    temp = {}
-    temp[0] = get_sub(0, db)
+    temp = {0: get_sub(0, db)}
     # print temp
     return json.dumps({'name': 'q_tree', 'data': temp})
 
@@ -441,7 +459,7 @@ def query_per_role():
 def add_per(p_name):
     db = dbc()
     try:
-        db.cur.execute("SELECT CASE WHEN max(p_id) IS NULL THEN 1 ELSE max(p_id) END FROM auth_per")
+        db.cur.execute("SELECT CASE WHEN max(p_id) IS NULL THEN 0 ELSE max(p_id) END FROM auth_per")
         max_id = db.cur.fetchone()[0] + 1
         temp_sql = ("insert into auth_per (p_id, permit_name) VALUES (%s,'%s')")%(max_id, p_name)
         db.cur.execute(temp_sql)

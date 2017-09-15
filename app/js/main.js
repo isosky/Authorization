@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://localhost:9909/ws");
+var ws = new WebSocket("ws://localhost:9909/ws?user=admin&pwd=pwd");
 var group_name = [];
 var role_name = [];
 var per_name = [];
