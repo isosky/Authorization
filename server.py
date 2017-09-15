@@ -25,7 +25,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         args = self.request.arguments
         pwd = args['pwd'][0]
         username = args['user'][0]
-        print args
+        # print args
         if login_check(user_name=username,pwd=pwd):
             WebSocketHandler.waiters.add(self)
             print 'open'
