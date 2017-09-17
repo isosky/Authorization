@@ -55,8 +55,10 @@ def modifygroup(g_id, g_name):
     try:
         temp_sql = "UPDATE auth_group SET group_name='%s' WHERE g_id=%s"%(g_name, g_id)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -75,9 +77,10 @@ def deletegroup(g_id, delete_sub):
                         deletegroup(gid, True)
                 else:
                     deletegroup(gid, False)
+            logging('info', temp_sql, '')
         except Exception as err:
-            print temp_sql
             print err
+            logging('info', temp_sql, err)
     else:
         try:
             temp_sql = "select user_id from auth_user where g_id=%s"%g_id
@@ -92,9 +95,10 @@ def deletegroup(g_id, delete_sub):
                     deleterole(r_id=role_id[0])
             temp_sql = "DELETE from  auth_group  WHERE g_id=%s"%g_id
             db.cur.execute(temp_sql)
+            logging('info', temp_sql, '')
         except Exception as err:
-            print temp_sql
             print err
+            logging('info', temp_sql, err)
     db.commit()
 
 
@@ -108,8 +112,10 @@ def checksub(g_id):
             return list(x[0] for x in d_gids)
         else:
             return False
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def addrole(g_id, r_name):
@@ -119,8 +125,10 @@ def addrole(g_id, r_name):
     try:
         temp_sql = "INSERT INTO auth_role_group (r_id, g_id, role_name) VALUES (%s,%s,'%s')"%(max_id, g_id, r_name)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -129,8 +137,10 @@ def modifyrole(r_id, r_name):
     try:
         temp_sql = "UPDATE auth_role_group SET role_name= '%s' where r_id=%s"%(r_name, r_id)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -149,8 +159,10 @@ def deleterole(r_id):
         db.commit()
         temp_sql = "DELETE from  auth_role_group  WHERE r_id=%s"%r_id
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -164,8 +176,10 @@ def adduser(g_id, r_id, user_name):
             max_id, g_id, r_id, user_name, False, 'lcf', None)
         # print  temp_sql
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -175,8 +189,10 @@ def modifyuser(user_id, r_id):
     try:
         temp_sql = "Update auth_user set r_id = %s WHERE user_id=%s"%(r_id, user_id)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -186,8 +202,10 @@ def updatepwd(user_id, pwd):
     try:
         temp_sql = "Update auth_user set pwd = '%s' WHERE user_id=%s"%(pwd, user_id)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -207,6 +225,7 @@ def login_check(user_name, pwd):
             return False
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def deleteuser(user_id):
@@ -220,8 +239,10 @@ def deleteuser(user_id):
             db.commit()
         temp_sql = "Delete from auth_user WHERE  user_id=%s"%user_id
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -230,8 +251,10 @@ def adduser_per(user_id, p_id):
     try:
         temp_sql = "Insert into auth_user_per VALUES (%s,%s)"%(user_id, p_id)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -248,8 +271,10 @@ def addrole_per(r_id, p_id):
         all_user = db.cur.fetchall()
         for user in all_user:
             adduser_per(user_id=user[0], p_id=p_id)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -264,9 +289,10 @@ def addrole_user(r_id, user_id):
         if db.cur.rowcount > 0:
             for pid in db.cur.fetchall():
                 adduser_per(user_id, pid[0])
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
-
+        logging('info', temp_sql, err)
 
 def deleterole_user(r_id, user_id):
     db = dbc()
@@ -279,8 +305,10 @@ def deleterole_user(r_id, user_id):
         if db.cur.rowcount > 0:
             for pid in db.cur.fetchall():
                 deleteuser_per(user_id, pid[0])
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def addgroup_per(g_id, p_id):
@@ -294,8 +322,10 @@ def addgroup_per(g_id, p_id):
         all_user = db.cur.fetchall()
         for user in all_user:
             adduser_per(user_id=user, p_id=p_id)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -304,8 +334,10 @@ def deleteuser_per(user_id, p_id):
     try:
         temp_sql = "delete from auth_user_per where user_id=%s and p_id=%s"%(user_id, p_id)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -322,8 +354,10 @@ def deleterole_per(r_id, p_id):
             all_user = db.cur.fetchall()
             for user in all_user:
                 deleteuser_per(user_id=user[0], p_id=p_id)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -339,8 +373,10 @@ def deletegroup_per(g_id, p_id):
         for user in all_user:
             print user
             deleteuser_per(user_id=user, p_id=p_id)
+        logging('info', temp_sql, '')
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
     db.commit()
 
 
@@ -371,6 +407,7 @@ def query_group_user(g_id):
     temp_sql = 'select user_id,user_name,r_id from auth_user where g_id=%s ORDER BY user_id'%g_id
     try:
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
         if db.cur.rowcount > 0:
             temp = list(db.cur.fetchall())
             temp = [list(x) for x in temp]
@@ -379,6 +416,7 @@ def query_group_user(g_id):
             return json.dumps({'name': 'user_list', 'data': []})
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def query_group_role(g_id):
@@ -386,6 +424,7 @@ def query_group_role(g_id):
     try:
         temp_sql = "select r_id,role_name from auth_role_group where g_id=%s ORDER BY r_id"%g_id
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
         if db.cur.rowcount > 0:
             temp = db.cur.fetchall()
             return json.dumps({'name': 'role_list', 'data': list(temp)})
@@ -393,6 +432,7 @@ def query_group_role(g_id):
             return json.dumps({'name': 'role_list', 'data': []})
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def initv():
@@ -409,9 +449,11 @@ def query_group_name():
         db.cur.execute(temp_sql)
         temp = db.cur.fetchall()
         temp = list([list(x) for x in temp])
+        logging('info', temp_sql, '')
         return temp
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def query_role_name():
@@ -421,9 +463,11 @@ def query_role_name():
         db.cur.execute(temp_sql)
         temp = db.cur.fetchall()
         temp = list([list(x) for x in temp])
+        logging('info', temp_sql, '')
         return temp
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def query_per_name():
@@ -431,12 +475,14 @@ def query_per_name():
     try:
         temp_sql = "SELECT p_id,permit_name FROM auth_per ORDER BY p_id"
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
         if db.cur.rowcount > 0:
             temp = db.cur.fetchall()
             temp = list([list(x) for x in temp])
             return json.dumps({'name': 'per_list', 'data': temp})
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def query_per_role():
@@ -445,6 +491,7 @@ def query_per_role():
     try:
         temp_sql = ' SELECT r_id,p_id FROM auth_role_per ORDER BY p_id'
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
         if db.cur.rowcount > 0:
             temp = db.cur.fetchall()
             for row in temp:
@@ -454,6 +501,7 @@ def query_per_role():
             return res
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def add_per(p_name):
@@ -463,9 +511,11 @@ def add_per(p_name):
         max_id = db.cur.fetchone()[0] + 1
         temp_sql = ("insert into auth_per (p_id, permit_name) VALUES (%s,'%s')")%(max_id, p_name)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
         db.commit()
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def modifyper(p_id, new_name):
@@ -473,9 +523,11 @@ def modifyper(p_id, new_name):
     try:
         temp_sql = "UPDATE auth_per set permit_name = '%s' where p_id =%s"%(new_name, p_id)
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
         db.commit()
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 def deleteper(p_id):
@@ -488,9 +540,11 @@ def deleteper(p_id):
                 deleterole_per(i[0], p_id)
         temp_sql = "delete from auth_per where p_id=%s"%p_id
         db.cur.execute(temp_sql)
+        logging('info', temp_sql, '')
         db.commit()
     except Exception as err:
         print err
+        logging('info', temp_sql, err)
 
 
 if __name__ == '__main__':
